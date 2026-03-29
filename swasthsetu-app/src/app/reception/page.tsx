@@ -1,17 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Phone, UserCheck, Clock, ArrowRight, Shield, Users, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
-  patients,
   getPatientByMobile,
+  getPatientById,
   getAge,
   getRecordsByPatientId,
   generateOTP,
   facilities,
+  patientQueue,
   type Patient,
+  type QueueEntry,
 } from '@/data/mock-data';
 import Link from 'next/link';
 
@@ -24,9 +26,51 @@ export default function ReceptionPage() {
   const [otpDigits, setOtpDigits] = useState(['', '', '', '']);
   const [consentGranted, setConsentGranted] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [activeStat, setActiveStat] = useState<'Patients Today' | 'Consents Pending' | 'Records Synced' | 'In Queue'>('In Queue');
   const [queuedPatients, setQueuedPatients] = useState<
     { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' }[]
   >([]);
+
+  useEffect(() => {
+    const storageKey = 'swasthsetu-reception-queue';
+    let persisted: { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' }[] = [];
+
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            persisted = parsed;
+          }
+        } catch {
+          persisted = [];
+        }
+      }
+    }
+
+    if (persisted.length > 0) {
+      setQueuedPatients(persisted);
+      return;
+    }
+
+    if (patientQueue.length > 0) {
+      const reconstructed = patientQueue
+        .map((entry: QueueEntry) => {
+          const patient = getPatientById(entry.patient_id);
+          return patient ? { patient, status: entry.status === 'RecordsSynced' ? 'RecordsSynced' : 'Waiting' } : null;
+        })
+        .filter((item): item is { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' } => Boolean(item));
+      setQueuedPatients(reconstructed);
+    }
+  }, []);
+
+  const persistQueue = (nextQueue: { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' }[]) => {
+    setQueuedPatients(nextQueue);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('swasthsetu-reception-queue', JSON.stringify(nextQueue));
+    }
+  };
 
   const handleSearch = () => {
     if (searchMobile.length < 10) {
@@ -81,12 +125,13 @@ export default function ReceptionPage() {
         description: 'Access valid for 24 hours',
         duration: 5000,
       });
-      // Add patient to queue
+      // Add or update patient in queue
       if (foundPatient) {
-        setQueuedPatients((prev) => [
-          ...prev.filter((q) => q.patient.id !== foundPatient.id),
-          { patient: foundPatient, status: 'RecordsSynced' },
-        ]);
+        const nextQueue = [
+          ...queuedPatients.filter((q) => q.patient.id !== foundPatient.id),
+          { patient: foundPatient, status: 'RecordsSynced' as const },
+        ];
+        persistQueue(nextQueue);
       }
     } else {
       toast.error('Invalid OTP. Please try again.');
@@ -105,6 +150,50 @@ export default function ReceptionPage() {
       ]
     : [];
 
+  const patientsTodayCount = queuedPatients.length;
+  const pendingCount = queuedPatients.filter((q) => q.status === 'Waiting').length;
+  const syncedCount = queuedPatients.filter((q) => q.status === 'RecordsSynced').length;
+  const inQueueCount = queuedPatients.filter((q) => q.status !== 'InConsultation').length;
+
+  const filteredQueue = queuedPatients.filter((q) => {
+    if (activeStat === 'Patients Today') return true;
+    if (activeStat === 'Consents Pending') return q.status === 'Waiting';
+    if (activeStat === 'Records Synced') return q.status === 'RecordsSynced';
+    if (activeStat === 'In Queue') return q.status !== 'InConsultation';
+    return true;
+  });
+
+  const stats = [
+    {
+      label: 'Patients Today',
+      value: String(patientsTodayCount),
+      icon: Users,
+      color: '#0f766e',
+      bg: '#f0fdfa',
+    },
+    {
+      label: 'Consents Pending',
+      value: String(pendingCount),
+      icon: Shield,
+      color: '#f59e0b',
+      bg: '#fffbeb',
+    },
+    {
+      label: 'Records Synced',
+      value: String(syncedCount),
+      icon: FileText,
+      color: '#3b82f6',
+      bg: '#eff6ff',
+    },
+    {
+      label: 'In Queue',
+      value: String(inQueueCount),
+      icon: Clock,
+      color: '#8b5cf6',
+      bg: '#f5f3ff',
+    },
+  ];
+
   return (
     <div>
       {/* Stats Bar */}
@@ -116,47 +205,21 @@ export default function ReceptionPage() {
           marginBottom: '32px',
         }}
       >
-        {[
-          {
-            label: 'Patients Today',
-            value: '24',
-            icon: Users,
-            color: '#0f766e',
-            bg: '#f0fdfa',
-          },
-          {
-            label: 'Consents Pending',
-            value: '3',
-            icon: Shield,
-            color: '#f59e0b',
-            bg: '#fffbeb',
-          },
-          {
-            label: 'Records Synced',
-            value: '18',
-            icon: FileText,
-            color: '#3b82f6',
-            bg: '#eff6ff',
-          },
-          {
-            label: 'In Queue',
-            value: String(queuedPatients.length),
-            icon: Clock,
-            color: '#8b5cf6',
-            bg: '#f5f3ff',
-          },
-        ].map((stat) => (
-          <div
+        {stats.map((stat) => (
+          <button
             key={stat.label}
+            onClick={() => setActiveStat(stat.label as typeof activeStat)}
             style={{
-              background: '#ffffff',
+              background: activeStat === stat.label ? '#e0f7fa' : '#ffffff',
               borderRadius: '16px',
               padding: '20px 24px',
-              border: '1px solid #e2e8f0',
+              border: activeStat === stat.label ? '2px solid #14b8a6' : '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
               boxShadow: 'var(--shadow-sm)',
+              cursor: 'pointer',
+              textAlign: 'left',
             }}
           >
             <div
@@ -187,7 +250,7 @@ export default function ReceptionPage() {
                 {stat.label}
               </p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -658,11 +721,11 @@ export default function ReceptionPage() {
                 fontWeight: 600,
               }}
             >
-              {queuedPatients.length} in queue
+              {filteredQueue.length} in queue
             </span>
           </div>
 
-          {queuedPatients.length === 0 ? (
+          {filteredQueue.length === 0 ? (
             <div
               style={{
                 padding: '48px 24px',
@@ -686,7 +749,7 @@ export default function ReceptionPage() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {queuedPatients.map((q) => (
+              {filteredQueue.map((q) => (
                 <Link
                   href={`/doctor/patient/${q.patient.id}`}
                   key={q.patient.id}

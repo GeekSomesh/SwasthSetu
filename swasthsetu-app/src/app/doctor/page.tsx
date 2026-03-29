@@ -2,19 +2,64 @@
 
 import { useState } from 'react';
 import { Users, Clock, FileText, Activity, ArrowRight, Stethoscope } from 'lucide-react';
-import { patients, getAge, getRecordsByPatientId } from '@/data/mock-data';
+import { Patient, patients, getAge, getRecordsByPatientId } from '@/data/mock-data';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 export default function DoctorPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeStat, setActiveStat] = useState('Patients Today');
+  const [actionMessage, setActionMessage] = useState('');
 
-  // For demo, show all patients as having records
-  const patientList = patients.filter(
-    (p) =>
+  const stats = [
+    {
+      label: 'Patients Today',
+      value: '12',
+      icon: Users,
+      color: '#0f766e',
+      bg: '#f0fdfa',
+      filter: () => true,
+      message: 'Showing all patients for today.',
+    },
+    {
+      label: 'Pending Review',
+      value: '5',
+      icon: Clock,
+      color: '#f59e0b',
+      bg: '#fffbeb',
+      filter: (patient: Patient) => getRecordsByPatientId(patient.id).length <= 2,
+      message: 'Showing patients pending review.',
+    },
+    {
+      label: 'Records Accessed',
+      value: '28',
+      icon: FileText,
+      color: '#3b82f6',
+      bg: '#eff6ff',
+      filter: (patient: Patient) => getRecordsByPatientId(patient.id).length > 0,
+      message: 'Showing patients with accessed records.',
+    },
+    {
+      label: 'Consultations Done',
+      value: '7',
+      icon: Activity,
+      color: '#10b981',
+      bg: '#ecfdf5',
+      filter: (patient: Patient) => getRecordsByPatientId(patient.id).length > 1,
+      message: 'Showing patients with completed consultations.',
+    },
+  ];
+
+  // For demo, show all patients as having records (and allow stat filters)
+  const patientList = patients
+    .filter((p) =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       p.mobile_number.includes(searchTerm)
-  );
+    )
+    .filter((p) => {
+      const stat = stats.find((s) => s.label === activeStat);
+      return stat ? stat.filter(p) : true;
+    });
 
   return (
     <div>
@@ -24,26 +69,27 @@ export default function DoctorPage() {
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: '16px',
-          marginBottom: '32px',
+          marginBottom: '8px',
         }}
       >
-        {[
-          { label: 'Patients Today', value: '12', icon: Users, color: '#0f766e', bg: '#f0fdfa' },
-          { label: 'Pending Review', value: '5', icon: Clock, color: '#f59e0b', bg: '#fffbeb' },
-          { label: 'Records Accessed', value: '28', icon: FileText, color: '#3b82f6', bg: '#eff6ff' },
-          { label: 'Consultations Done', value: '7', icon: Activity, color: '#10b981', bg: '#ecfdf5' },
-        ].map((stat) => (
-          <div
+        {stats.map((stat) => (
+          <button
             key={stat.label}
+            onClick={() => {
+              setActiveStat(stat.label);
+              setActionMessage(stat.message);
+            }}
             style={{
-              background: '#ffffff',
+              background: activeStat === stat.label ? '#e0f2fe' : '#ffffff',
               borderRadius: '16px',
               padding: '20px 24px',
-              border: '1px solid #e2e8f0',
+              border: activeStat === stat.label ? '2px solid #0ea5e9' : '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
               boxShadow: 'var(--shadow-sm)',
+              cursor: 'pointer',
+              textAlign: 'left',
             }}
           >
             <div
@@ -67,9 +113,23 @@ export default function DoctorPage() {
                 {stat.label}
               </p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
+      {actionMessage && (
+        <div
+          style={{
+            marginBottom: '24px',
+            color: '#0369a1',
+            padding: '12px 16px',
+            background: '#e0f2fe',
+            borderRadius: '12px',
+            border: '1px solid #7dd3fc',
+          }}
+        >
+          {actionMessage}
+        </div>
+      )}
 
       {/* Patient List */}
       <div

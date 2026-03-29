@@ -28,6 +28,7 @@ import {
   getAge,
   getFacilityById,
   getDoctorById,
+  medicalRecords,
   type MedicalRecord,
   type RecordType,
 } from '@/data/mock-data';
@@ -70,8 +71,9 @@ export default function PatientTimelinePage() {
   const params = useParams();
   const patientId = params.id as string;
   const patient = getPatientById(patientId);
-  const allRecords = getRecordsByPatientId(patientId);
+  const initialRecords = getRecordsByPatientId(patientId);
 
+  const [records, setRecords] = useState<MedicalRecord[]>(initialRecords);
   const [activeFilter, setActiveFilter] = useState<RecordType | 'All'>('All');
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
   const [showNewVisit, setShowNewVisit] = useState(false);
@@ -95,8 +97,8 @@ export default function PatientTimelinePage() {
 
   const filteredRecords =
     activeFilter === 'All'
-      ? allRecords
-      : allRecords.filter((r) => r.record_type === activeFilter);
+      ? records
+      : records.filter((r) => r.record_type === activeFilter);
 
   const filterOptions: (RecordType | 'All')[] = [
     'All',
@@ -107,10 +109,37 @@ export default function PatientTimelinePage() {
   ];
 
   const handleNewVisitSubmit = () => {
+    const parsedMedications = newVisitData.medications
+      .split('\n')
+      .map((m) => m.trim())
+      .filter(Boolean);
+
+    const newRecord: MedicalRecord = {
+      id: `rec-${Date.now()}`,
+      patient_id: patient?.id ?? patientId,
+      facility_id: getDoctorById('doc-001')?.facility_id ?? 'fac-001',
+      doctor_id: getDoctorById('doc-001')?.id ?? 'doc-001',
+      record_type: 'Prescription',
+      date: new Date().toISOString(),
+      title: `Visit Note - ${new Date().toLocaleDateString('en-IN')}`,
+      document_url: '/mock/prescription-new.png',
+      notes: newVisitData.notes || 'Clinical notes recorded.',
+      diagnosis: newVisitData.diagnosis || 'N/A',
+      medications: parsedMedications.length > 0 ? parsedMedications : ['No medications entered.'],
+    };
+
+    // Keep in-memory data for current UI
+    setRecords((prev) => [newRecord, ...prev]);
+
+    // Optional external sync: keep module-level array updated for other components
+    // (this is a demo in-memory store, not persistent)
+    medicalRecords.unshift(newRecord);
+
     toast.success('Visit note saved & synced to patient timeline!', {
-      description: 'This record is now available across all facilities.',
+      description: 'Added as a prescription record for this patient.',
       duration: 5000,
     });
+
     setShowNewVisit(false);
     setNewVisitData({ diagnosis: '', medications: '', notes: '', followUp: '' });
   };
@@ -228,8 +257,8 @@ export default function PatientTimelinePage() {
           const config = filter !== 'All' ? recordTypeConfig[filter] : null;
           const count =
             filter === 'All'
-              ? allRecords.length
-              : allRecords.filter((r) => r.record_type === filter).length;
+              ? records.length
+              : records.filter((r) => r.record_type === filter).length;
 
           return (
             <button
@@ -852,16 +881,24 @@ export default function PatientTimelinePage() {
               exit={{ opacity: 0, scale: 0.95 }}
               style={{
                 position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '560px',
-                background: '#ffffff',
-                borderRadius: '24px',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 zIndex: 101,
-                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
-                overflow: 'hidden',
+                padding: '12px',
               }}
+            >
+              <div
+                style={{
+                  width: 'min(560px, 90vw)',
+                  maxWidth: '90vw',
+                  maxHeight: '90vh',
+                  background: '#ffffff',
+                  borderRadius: '24px',
+                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)',
+                  overflow: 'auto',
+                }}
             >
               {/* Modal Header */}
               <div
@@ -1048,6 +1085,7 @@ export default function PatientTimelinePage() {
                   Save Visit & Sync to Timeline
                 </button>
               </div>
+            </div>
             </motion.div>
           </>
         )}

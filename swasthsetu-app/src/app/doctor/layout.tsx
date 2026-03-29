@@ -12,7 +12,11 @@ export default function DoctorLayout({
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
       <div style={{ flex: 1, marginLeft: '260px', transition: 'margin-left 0.3s ease' }}>
-        <TopNav title="Doctor Dashboard" subtitle="Patient records & clinical view" />
+        <TopNav
+          title="Doctor Dashboard"
+          subtitle="Patient records & clinical view"
+          onNotificationClick={() => alert('No new doctor notifications at the moment.')}
+        />
         <main style={{ padding: '24px 32px' }}>{children}</main>
       </div>
     </div>

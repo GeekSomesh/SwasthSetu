@@ -5,9 +5,11 @@ import { Bell, Search, User } from 'lucide-react';
 interface TopNavProps {
   title: string;
   subtitle?: string;
+  onNotificationClick?: () => void;
+  onQuickSearch?: (term: string) => void;
 }
 
-export default function TopNav({ title, subtitle }: TopNavProps) {
+export default function TopNav({ title, subtitle, onNotificationClick, onQuickSearch }: TopNavProps) {
   return (
     <header
       style={{
@@ -61,6 +63,16 @@ export default function TopNav({ title, subtitle }: TopNavProps) {
           <input
             type="text"
             placeholder="Quick search..."
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                const value = (e.target as HTMLInputElement).value;
+                if (onQuickSearch) {
+                  onQuickSearch(value);
+                } else {
+                  alert(`Search triggered for: ${value}`);
+                }
+              }
+            }}
             style={{
               border: 'none',
               background: 'transparent',
@@ -74,6 +86,13 @@ export default function TopNav({ title, subtitle }: TopNavProps) {
 
         {/* Notification Bell */}
         <button
+          onClick={() => {
+            if (onNotificationClick) {
+              onNotificationClick();
+            } else {
+              alert('No new notifications yet.');
+            }
+          }}
           style={{
             width: '40px',
             height: '40px',
@@ -84,6 +103,7 @@ export default function TopNav({ title, subtitle }: TopNavProps) {
             alignItems: 'center',
             justifyContent: 'center',
             position: 'relative',
+            cursor: 'pointer',
           }}
         >
           <Bell size={18} color="#475569" />

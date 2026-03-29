@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "SwasthSetu AI — Care Continuity Platform",
@@ -21,10 +14,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className="h-full antialiased">
       <body
         style={{
-          fontFamily: "var(--font-inter), system-ui, -apple-system, sans-serif",
+          fontFamily: "Inter, system-ui, -apple-system, sans-serif",
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
@@ -37,7 +30,7 @@ export default function RootLayout({
             style: {
               borderRadius: "12px",
               fontSize: "14px",
-              fontFamily: "var(--font-inter), system-ui, sans-serif",
+              fontFamily: "Inter, system-ui, sans-serif",
             },
           }}
         />

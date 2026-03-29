@@ -1,0 +1,1080 @@
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+
+<--- Last few GCs --->
+
+
+
+#
+# Fatal JavaScript out of memory: MemoryChunk allocation failed during deserialization.
+#
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD 
+ 2: 00007FF79820F536 
+ 3: 00007FF797A79C46 
+ 4: 00007FF797888077 
+ 5: 00007FF797838A9F 
+ 6: 00007FF797838B68 
+ 7: 00007FF797839635 
+ 8: 00007FF79780A211 
+ 9: 00007FF797877D43 
+10: 00007FF797877ABE 
+11: 00007FF7978768B8 
+12: 00007FF79787683F 
+13: 00007FF7978A2EC4 
+14: 00007FF7978A22D3 
+15: 00007FF79746C03D 
+16: 00007FF797469C90 
+17: 00007FF79747142E 
+18: 00007FF79746A6DD 
+19: 00007FF797448504 
+20: 00007FF797890DEE 
+21: 00007FF797890A85 
+22: 00007FF797449213 
+23: 00007FF797928A7A 
+24: 00007FF797928F32 
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+25: 00007FF79744E613 
+26: 00007FF797AA60E6 
+27: 00007FF796FF4180 
+28: 00007FF796D419DA 
+29: 00007FF796D40C99 
+30: 00007FF796D4ABD0 
+31: 00007FF797AD08B6 
+32: 00007FF798E7B363 
+33: 00007FFA9953E8D7 
+34: 00007FFA9AAEC48C RtlUserThreadStart+44
+
+
+#
+# Fatal process out of memory: Re-embedded builtins: set permissions
+#
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD 
+ 2: 00007FF79820F536 
+ 3: 00007FF797A79C46 
+ 4: 00007FF7978F383E 
+ 5: 00007FF7979279BF 
+ 6: 00007FF797928468 
+ 7: 00007FF797928F32 
+ 8: 00007FF79744E613 
+ 9: 00007FF797AA60E6 
+10: 00007FF796FF4180 
+11: 00007FF796D419DA 
+12: 00007FF796D40C99 
+13: 00007FF796D4ABD0 
+14: 00007FF797AD08B6 
+15: 00007FF798E7B363 
+16: 00007FFA9953E8D7 BaseThreadInitThunk+23
+17: 00007FFA9AAEC48C RtlUserThreadStart+44
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+
+<--- Last few GCs --->
+
+
+
+#
+# Fatal process out of memory: JSDispatchTable::AllocateAndInitializeEntry
+#
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD node::MultiIsolatePlatform::DisposeIsolate+4301
+ 2: 00007FF79820F536 v8::base::FatalOOM+54
+ 3: 00007FF797A79C46 v8::Function::NewInstance+390
+ 4: 00007FF797928EE2 EVP_MD_meth_get_input_blocksize+94562
+ 5: 00007FF797928F32 EVP_MD_meth_get_input_blocksize+94642
+ 6: 00007FF79744E613 v8::internal::Version::GetSONAME+89411
+ 7: 00007FF797AA60E6 v8::Isolate::Initialize+662
+ 8: 00007FF796FF4180 node::SetIsolateUpForNode+752
+ 9: 00007FF796D419DA RSA_meth_get_flags+223786
+10: 00007FF796D40C99 RSA_meth_get_flags+220393
+11: 00007FF796D4ABD0 RSA_meth_get_flags+261152
+12: 00007FF797AD08B6 uv_thread_detach+150
+13: 00007FF798E7B363 v8::base::DiyFp::Multiply+10742019
+14: 00007FFA9953E8D7 BaseThreadInitThunk+23
+15: 00007FFA9AAEC48C RtlUserThreadStart+44
+
+<--- Last few GCs --->
+
+
+
+#
+# Fatal JavaScript out of memory: MemoryChunk allocation failed during deserialization.
+#
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD 
+ 2: 00007FF79820F536 
+ 3: 00007FF797A79C46 
+Error: Can't resolve 'tailwindcss' in 'C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu'
+    [2m[at finishWithoutResolve (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:587:18)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:679:14][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:16:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\enhanced-resolve\lib\Resolver.js:740:5][0m
+    [2m[at eval (eval at create (C:\Users\thaku\OneDrive\Desktop\swasth setu\SwasthSetu\swasthsetu-app\node_modules\tapable\lib\HookCodeFactory.js:31:10), <anonymous>:15:1)][0m {
+  details: "resolve 'tailwindcss' in 'C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu'\n" +
+    '  Parsed request is a module\n' +
+    '  No description file found in C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu or above\n' +
+    '  resolve as module\n' +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\SwasthSetu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\swasth setu\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\Desktop\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\Users\\thaku\\OneDrive\\node_modules doesn't exist or is not a directory\n" +
+    '    looking for modules in C:\\Users\\thaku\\node_modules\n' +
+    '      single file module\n' +
+    '        No description file found in C:\\Users\\thaku\\node_modules or above\n' +
+    '        no extension\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    '        .css\n' +
+    "          C:\\Users\\thaku\\node_modules\\tailwindcss.css doesn't exist\n" +
+    "      C:\\Users\\thaku\\node_modules\\tailwindcss doesn't exist\n" +
+    "    C:\\Users\\node_modules doesn't exist or is not a directory\n" +
+    "    C:\\node_modules doesn't exist or is not a directory"
+}
+ 4: 00007FF797888077 
+ 5: 00007FF797838A9F 
+ 6: 00007FF797838B68 
+ 7: 00007FF797839635 
+ 8: 00007FF79780A211 
+ 9: 00007FF797877D43 
+10: 00007FF797877ABE 
+11: 00007FF7978768B8 
+12: 00007FF79787683F 
+13: 00007FF79746BFC0 
+14: 00007FF797469C90 
+15: 00007FF79746FE46 
+16: 00007FF79746A998 
+17: 00007FF797469E6E 
+18: 00007FF79746FE46 
+19: 00007FF79746A998 
+20: 00007FF797469E6E 
+21: 00007FF79746FE46 
+22: 00007FF79746A998 
+23: 00007FF797469E6E 
+24: 00007FF79746FE46 
+25: 00007FF79746A998 
+26: 00007FF797469E6E 
+27: 00007FF79747142E 
+28: 00007FF79746A6DD 
+29: 00007FF7978909EC 
+30: 00007FF797449213 
+31: 00007FF797928A7A 
+32: 00007FF797928F32 
+33: 00007FF79744E613 
+34: 00007FF797AA60E6 
+35: 00007FF796FF4180 
+36: 00007FF796D419DA 
+37: 00007FF796D40C99 
+38: 00007FF796D4ABD0 
+39: 00007FF797AD08B6 
+40: 00007FF798E7B363 
+41: 00007FFA9953E8D7 BaseThreadInitThunk+23
+42: 00007FFA9AAEC48C RtlUserThreadStart+44
+
+<--- Last few GCs --->
+[62952:000001E56C8D9000]     7119 ms: Scavenge 5.8 (7.0) -> 5.3 (7.5) MB, pooled: 0.0 MB, 4033.36 / 0.00 ms (average mu = 1.000, current mu = 1.000) allocation failure; 
+
+FATAL ERROR: Zone Allocation failed - process out of memory
+----- Native stack trace -----
+
+ 1: 00007FF796EDB106 node::OnFatalError+1318
+ 2: 00007FF797A79C67 v8::Function::NewInstance+423
+ 3: 00007FF797438303 v8::SnapshotCreator::GetIsolate+57619
+ 4: 00007FF797A70217 v8::internal::ThreadIsolation::LookupJumpTableAllocations+661975
+ 5: 00007FF79758193D EC_KEY_METHOD_set_verify+345677
+ 6: 00007FF7975802F6 EC_KEY_METHOD_set_verify+339974
+ 7: 00007FF797577649 EC_KEY_METHOD_set_verify+303961
+ 8: 00007FF797578D1B EC_KEY_METHOD_set_verify+309803
+ 9: 00007FF797577EDE EC_KEY_METHOD_set_verify+306158
+10: 00007FF797577B99 EC_KEY_METHOD_set_verify+305321
+11: 00007FF797580640 EC_KEY_METHOD_set_verify+340816
+12: 00007FF797577649 EC_KEY_METHOD_set_verify+303961
+13: 00007FF797578D1B EC_KEY_METHOD_set_verify+309803
+14: 00007FF797577EDE EC_KEY_METHOD_set_verify+306158
+15: 00007FF79758A172 EC_KEY_METHOD_set_verify+380546
+16: 00007FF797568E45 EC_KEY_METHOD_set_verify+244565
+17: 00007FF797571CDB EC_KEY_METHOD_set_verify+281067
+18: 00007FF79757119A EC_KEY_METHOD_set_verify+278186
+19: 00007FF79756446F EC_KEY_METHOD_set_verify+225663
+20: 00007FF797563594 EC_KEY_METHOD_set_verify+221860
+21: 00007FF797562756 EC_KEY_METHOD_set_verify+218214
+22: 00007FF7975623AA EC_KEY_METHOD_set_verify+217274
+23: 00007FF79755DA69 EC_KEY_METHOD_set_verify+198521
+24: 00007FF797A0FACF v8::internal::ThreadIsolation::LookupJumpTableAllocations+266895
+25: 00007FF797A13118 v8::internal::ThreadIsolation::LookupJumpTableAllocations+280792
+26: 00007FF797A8222B v8::ScriptCompiler::CompileFunction+1035
+27: 00007FF796EF85F0 node::GetCurrentEnvironment+20896
+28: 00007FF796EF6D95 node::GetCurrentEnvironment+14661
+29: 000001E527DD014D 
+
+thread 'tokio-runtime-worker' (25740) panicked at C:\Users\Administrator\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\tokio-1.43.0\src\io\blocking.rs:76:46:
+OS can't spawn worker thread: Insufficient system resources exist to complete the requested service. (os error 1450)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+#
+# Fatal process out of memory: Re-embedded builtins: set permissions
+#
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD 
+ 2: 00007FF79820F536 
+ 3: 00007FF797A79C46 
+ 4: 00007FF7978F383E 
+ 5: 00007FF7979279BF 
+ 6: 00007FF797928468 
+ 7: 00007FF797928F32 
+ 8: 00007FF79744E613 
+ 9: 00007FF797AA60E6 
+10: 00007FF796FF4180 
+11: 00007FF796D419DA 
+12: 00007FF796D40C99 
+13: 00007FF796D4ABD0 
+14: 00007FF797AD08B6 
+15: 00007FF798E7B363 
+16: 00007FFA9953E8D7 BaseThreadInitThunk+23
+17: 00007FFA9AAEC48C RtlUserThreadStart+44
+
+
+#
+# Fatal process out of memory: Re-embedded builtins: set permissions
+#
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD node::MultiIsolatePlatform::DisposeIsolate+4301
+ 2: 00007FF79820F536 v8::base::FatalOOM+54
+ 3: 00007FF797A79C46 v8::Function::NewInstance+390
+ 4: 00007FF7978F383E v8::CppHeap::CollectGarbageInYoungGenerationForTesting+112126
+ 5: 00007FF7979279BF EVP_MD_meth_get_input_blocksize+89151
+ 6: 00007FF797928468 EVP_MD_meth_get_input_blocksize+91880
+ 7: 00007FF797928F32 EVP_MD_meth_get_input_blocksize+94642
+ 8: 00007FF79744E613 v8::internal::Version::GetSONAME+89411
+ 9: 00007FF797AA60E6 v8::Isolate::Initialize+662
+10: 00007FF796FF4180 node::SetIsolateUpForNode+752
+11: 00007FF796D419DA RSA_meth_get_flags+223786
+12: 00007FF796D40C99 RSA_meth_get_flags+220393
+13: 00007FF796D4ABD0 RSA_meth_get_flags+261152
+14: 00007FF797AD08B6 uv_thread_detach+150
+15: 00007FF798E7B363 v8::base::DiyFp::Multiply+10742019
+16: 00007FFA9953E8D7 BaseThreadInitThunk+23
+17: 00007FFA9AAEC48C RtlUserThreadStart+44
+
+
+#
+# Fatal error in , line 0
+# Out of memory: HashMap::Initialize
+#
+#
+#
+#FailureMessage Object: 0000004A2FFF7A40
+----- Native stack trace -----
+
+ 1: 00007FF796E2DAFD 
+ 2: 00007FF79820FACF 
+ 3: 00007FF797A77D1F 
+ 4: 00007FF797A774DB 
+ 5: 00007FF797A77317 
+ 6: 00007FF797540B8F 
+ 7: 00007FF79754A78C 
+ 8: 00007FF79754EE5B 
+ 9: 00007FF79754E303 
+10: 00007FF79754CD6A 
+11: 00007FF797557F34 
+12: 00007FF79754861C 
+13: 00007FF797547C2D 
+14: 00007FF7975473EB 
+15: 00007FF7975468EC 
+16: 00007FF79754BE63 
+17: 00007FF79754A9D8 
+18: 00007FF79754EE5B 
+19: 00007FF79754E303 
+20: 00007FF79754CD6A 
+21: 00007FF797557F34 
+22: 00007FF79754861C 
+23: 00007FF797547C2D 
+24: 00007FF79754635B 
+25: 00007FF797545696 
+26: 00007FF797570755 
+27: 00007FF7975643DE 
+28: 00007FF797589943 
+29: 00007FF797568FB4 
+30: 00007FF797571CDB 
+
+31: 00007FF797567395 
+
+32: 00007FF797578C06 
+#
+33: 00007FF797577F24 
+# Fatal process out of memory: Re-embedded builtins: set permissions
+34: 00007FF79757DA64 
+35: 00007FF79757BE4C 
+#
+36: 00007FF797578D1B 
+----- Native stack trace -----
+37: 00007FF797577EDE 
+
+38: 00007FF79757DA64 
+ 1: 00007FF796E2DAFD 
+39: 00007FF79758906F 
+ 2: 00007FF79820F536 
+40: 00007FF797571CDB 
+ 3: 00007FF797A79C46 
+41: 00007FF797567395 
+ 4: 00007FF7978F383E 
+42: 00007FF797578C06 
+ 5: 00007FF7979279BF 
+43: 00007FF797577F24 
+ 6: 00007FF797928468 
+44: 00007FF79757DA64 
+ 7: 00007FF797928F32 
+45: 00007FF79757BE4C 
+ 8: 00007FF79744E613 
+46: 00007FF797578D1B 
+ 9: 00007FF797AA60E6 
+47: 00007FF797577EDE 
+10: 00007FF796FF4180 
+48: 00007FF79757DA64 
+11: 00007FF796D419DA 
+49: 00007FF79758906F 
+12: 00007FF796D40C99 
+50: 00007FF797571CDB 
+13: 00007FF796D4ABD0 
+51: 00007FF79757119A 
+14: 00007FF797AD08B6 
+52: 00007FF79756446F 
+15: 00007FF798E7B363 
+53: 00007FF797563594 
+16: 00007FFA9953E8D7 
+54: 00007FF797562756 
+17: 00007FFA9AAEC48C 
+55: 00007FF7975623AA 
+56: 00007FF79755DA69 
+57: 00007FF797A0FACF 
+58: 00007FF797A13118 
+59: 00007FF797A8222B 
+60: 00007FF796EF85F0 
+61: 00007FF796EF6D95 
+62: 0000019C2FDD014D 
