@@ -6,30 +6,53 @@ import {
   LayoutDashboard,
   Users,
   FileText,
-  Settings,
   Stethoscope,
   ChevronLeft,
   ChevronRight,
   Heart,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { type UserRole } from '@/lib/auth';
 
-const navItems = [
-  { label: 'Reception', href: '/reception', icon: LayoutDashboard },
-  { label: 'Doctor View', href: '/doctor', icon: Stethoscope },
-  { label: 'Patients', href: '/reception', icon: Users },
-  { label: 'Records', href: '/doctor', icon: FileText },
-  { label: 'Settings', href: '#', icon: Settings },
-];
+type NavItem = {
+  label: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+};
 
-export default function Sidebar() {
+const navItemsByRole: Record<UserRole, NavItem[]> = {
+  reception: [
+    { label: 'Reception', href: '/reception', icon: LayoutDashboard },
+    { label: 'Patients', href: '/reception', icon: Users },
+  ],
+  doctor: [
+    { label: 'Doctor View', href: '/doctor', icon: Stethoscope },
+    { label: 'Records', href: '/doctor', icon: FileText },
+  ],
+};
+
+interface SidebarProps {
+  role: UserRole;
+}
+
+const SIDEBAR_EXPANDED_WIDTH = 260;
+const SIDEBAR_COLLAPSED_WIDTH = 72;
+
+export default function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const navItems = navItemsByRole[role];
+  const sidebarWidth = collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_EXPANDED_WIDTH;
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.style.setProperty('--app-sidebar-width', `${sidebarWidth}px`);
+  }, [sidebarWidth]);
 
   return (
     <aside
       style={{
-        width: collapsed ? '72px' : '260px',
+        width: `${sidebarWidth}px`,
         minHeight: '100vh',
         background: 'linear-gradient(180deg, #134e4a 0%, #0f766e 50%, #115e59 100%)',
         display: 'flex',

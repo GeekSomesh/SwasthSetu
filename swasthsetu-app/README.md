@@ -2,6 +2,41 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+1. Create your environment file:
+
+```bash
+cp .env.example .env.local
+```
+
+2. Configure MongoDB credentials in `.env.local`.
+
+3. Run the development server:
+
+```bash
+npm run dev
+```
+
+4. Open [http://localhost:3000](http://localhost:3000).
+
+## MongoDB Integration
+
+- The API layer supports MongoDB using:
+  - `MONGODB_URI`
+  - `MONGODB_DB_NAME`
+- When MongoDB is configured, API routes read/write MongoDB.
+- On first Mongo-enabled API call, baseline data is auto-seeded from `src/data/mock-data.ts` if the database is empty.
+- If MongoDB is not configured or temporarily unavailable, the API falls back to in-memory mock data so development can continue.
+
+## API Routes Wired To MongoDB
+
+- `POST /api/patients/search`
+- `GET /api/records/timeline?patientId=...`
+- `POST /api/records/upload`
+- `POST /api/consent/request`
+- `POST /api/consent/verify`
+
+## Old Next.js Template Section
+
 First, run the development server:
 
 ```bash

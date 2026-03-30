@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Heart, Stethoscope, ClipboardList, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { persistRoleCookie, ROLE_HOME } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,8 +15,9 @@ export default function LoginPage() {
   const handleLogin = () => {
     if (!selectedRole) return;
     setIsLoading(true);
+    persistRoleCookie(selectedRole);
     setTimeout(() => {
-      router.push(`/${selectedRole}`);
+      router.push(ROLE_HOME[selectedRole]);
     }, 800);
   };
 

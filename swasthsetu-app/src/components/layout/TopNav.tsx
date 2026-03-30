@@ -5,11 +5,18 @@ import { Bell, Search, User } from 'lucide-react';
 interface TopNavProps {
   title: string;
   subtitle?: string;
+  deskLabel?: string;
   onNotificationClick?: () => void;
   onQuickSearch?: (term: string) => void;
 }
 
-export default function TopNav({ title, subtitle, onNotificationClick, onQuickSearch }: TopNavProps) {
+export default function TopNav({
+  title,
+  subtitle,
+  deskLabel = 'Reception Desk',
+  onNotificationClick,
+  onQuickSearch,
+}: TopNavProps) {
   return (
     <header
       style={{
@@ -150,7 +157,7 @@ export default function TopNav({ title, subtitle, onNotificationClick, onQuickSe
             <p style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a', lineHeight: 1.2 }}>
               City Care Hospital
             </p>
-            <p style={{ fontSize: '11px', color: '#475569' }}>Reception Desk</p>
+            <p style={{ fontSize: '11px', color: '#475569' }}>{deskLabel}</p>
           </div>
         </div>
       </div>

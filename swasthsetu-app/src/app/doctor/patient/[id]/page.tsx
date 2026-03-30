@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -16,6 +16,7 @@ import {
   Eye,
   Plus,
   Send,
+  Activity,
   Building2,
   User,
   Pill,
@@ -24,14 +25,19 @@ import {
 import Link from 'next/link';
 import {
   getPatientById,
-  getRecordsByPatientId,
   getAge,
   getFacilityById,
   getDoctorById,
-  medicalRecords,
   type MedicalRecord,
   type RecordType,
 } from '@/data/mock-data';
+import {
+  getPatientQueueStore,
+  markPatientDiagnosed,
+  markPatientUnderDiagnosis,
+  subscribeToPatientQueue,
+  type QueueStatus,
+} from '@/lib/patient-queue';
 
 const recordTypeConfig: Record<
   RecordType,
@@ -67,22 +73,139 @@ const recordTypeConfig: Record<
   },
 };
 
+const queueStatusConfig: Record<
+  QueueStatus,
+  { label: string; bgColor: string; textColor: string }
+> = {
+  Waiting: {
+    label: 'Pending Review',
+    bgColor: '#fffbeb',
+    textColor: '#92400e',
+  },
+  UnderDiagnosis: {
+    label: 'Under Diagnosis',
+    bgColor: '#eff6ff',
+    textColor: '#1d4ed8',
+  },
+};
+
+type PrescriptionTemplate = {
+  id: string;
+  label: string;
+  diagnosis: string;
+  medications: string[];
+  notes: string;
+  followUpDays: number;
+};
+
+const prescriptionTemplates: PrescriptionTemplate[] = [
+  {
+    id: 'viral-fever',
+    label: 'Viral Fever',
+    diagnosis: 'Acute Viral Febrile Illness',
+    medications: [
+      'Paracetamol 650mg SOS for fever',
+      'Cetirizine 10mg at bedtime for 3 days',
+      'ORS 200ml after each loose stool',
+    ],
+    notes: 'Hydration advised. Red-flag symptoms explained: persistent fever >3 days, breathlessness, vomiting.',
+    followUpDays: 3,
+  },
+  {
+    id: 'hypertension-followup',
+    label: 'Hypertension Follow-up',
+    diagnosis: 'Essential Hypertension - Follow-up',
+    medications: [
+      'Amlodipine 5mg once daily',
+      'Telmisartan 40mg once daily',
+      'Low-salt diet and 30 min walk daily',
+    ],
+    notes: 'BP charting advised twice daily for 7 days. Avoid excess salt and OTC painkillers.',
+    followUpDays: 14,
+  },
+  {
+    id: 'diabetes-followup',
+    label: 'Diabetes Follow-up',
+    diagnosis: 'Type 2 Diabetes Mellitus - Routine Review',
+    medications: [
+      'Metformin 500mg twice daily after meals',
+      'Glimepiride 1mg once daily before breakfast',
+      'Foot care and daily glucose monitoring',
+    ],
+    notes: 'Diet counseling provided. Watch for hypoglycemia signs and maintain sugar logbook.',
+    followUpDays: 15,
+  },
+  {
+    id: 'gastritis-acidity',
+    label: 'Gastritis / Acidity',
+    diagnosis: 'Acid Peptic Disease / Gastritis',
+    medications: [
+      'Pantoprazole 40mg once daily before breakfast',
+      'Antacid syrup 10ml TDS after meals',
+      'Domperidone 10mg SOS for nausea',
+    ],
+    notes: 'Avoid spicy/oily food, tea/coffee excess, and late-night meals.',
+    followUpDays: 7,
+  },
+];
+
 export default function PatientTimelinePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const patientId = params.id as string;
   const patient = getPatientById(patientId);
-  const initialRecords = getRecordsByPatientId(patientId);
+  const startInNewVisitMode = searchParams.get('newVisit') === '1';
 
-  const [records, setRecords] = useState<MedicalRecord[]>(initialRecords);
+  const [records, setRecords] = useState<MedicalRecord[]>([]);
   const [activeFilter, setActiveFilter] = useState<RecordType | 'All'>('All');
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
-  const [showNewVisit, setShowNewVisit] = useState(false);
+  const [showNewVisit, setShowNewVisit] = useState(startInNewVisitMode);
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [newVisitData, setNewVisitData] = useState({
     diagnosis: '',
     medications: '',
     notes: '',
     followUp: '',
   });
+  const [queueStore, setQueueStore] = useState(() => getPatientQueueStore());
+
+  useEffect(() => {
+    const unsubscribe = subscribeToPatientQueue((nextStore) => {
+      setQueueStore(nextStore);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    markPatientUnderDiagnosis(patientId);
+  }, [patientId]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadTimeline() {
+      try {
+        const response = await fetch(`/api/records/timeline?patientId=${encodeURIComponent(patientId)}`);
+        if (!response.ok) {
+          throw new Error(`Timeline fetch failed with status ${response.status}`);
+        }
+
+        const payload = (await response.json()) as { records?: MedicalRecord[] };
+        if (!isMounted) return;
+        setRecords(Array.isArray(payload.records) ? payload.records : []);
+      } catch (error) {
+        console.error('Failed to fetch timeline records from API.', error);
+        if (!isMounted) return;
+        toast.error('Could not load timeline from server.');
+      }
+    }
+
+    loadTimeline();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [patientId]);
 
   if (!patient) {
     return (
@@ -108,40 +231,107 @@ export default function PatientTimelinePage() {
     'DischargeSummary',
   ];
 
-  const handleNewVisitSubmit = () => {
+  const queueEntry = queueStore.queue.find((entry) => entry.patientId === patientId);
+  const queueStatus = queueEntry?.status ?? null;
+  const selectedTemplate =
+    prescriptionTemplates.find((template) => template.id === selectedTemplateId) ?? null;
+
+  const handleMarkDiagnosed = () => {
+    const marked = markPatientDiagnosed(patientId);
+    if (!marked) {
+      toast.info('Patient is not in active queue.', {
+        description: 'Only queued patients can be marked diagnosed.',
+      });
+      return;
+    }
+
+    setQueueStore(getPatientQueueStore());
+    toast.success('Patient marked diagnosed', {
+      description: 'Consultation is now counted under "Consultations Done".',
+    });
+  };
+
+  const buildFollowUpDate = (daysFromNow: number): string => {
+    const next = new Date();
+    next.setDate(next.getDate() + daysFromNow);
+    return next.toISOString().slice(0, 10);
+  };
+
+  const handleApplyTemplate = () => {
+    if (!selectedTemplate) {
+      toast.info('Select a prescription template first.');
+      return;
+    }
+
+    setNewVisitData((prev) => ({
+      ...prev,
+      diagnosis: selectedTemplate.diagnosis,
+      medications: selectedTemplate.medications.join('\n'),
+      notes: selectedTemplate.notes,
+      followUp: buildFollowUpDate(selectedTemplate.followUpDays),
+    }));
+
+    toast.success(`Applied template: ${selectedTemplate.label}`);
+  };
+
+  const handleClearTemplate = () => {
+    setSelectedTemplateId('');
+    setNewVisitData({
+      diagnosis: '',
+      medications: '',
+      notes: '',
+      followUp: '',
+    });
+  };
+
+  const handleNewVisitSubmit = async () => {
     const parsedMedications = newVisitData.medications
       .split('\n')
       .map((m) => m.trim())
       .filter(Boolean);
 
-    const newRecord: MedicalRecord = {
-      id: `rec-${Date.now()}`,
-      patient_id: patient?.id ?? patientId,
-      facility_id: getDoctorById('doc-001')?.facility_id ?? 'fac-001',
-      doctor_id: getDoctorById('doc-001')?.id ?? 'doc-001',
-      record_type: 'Prescription',
-      date: new Date().toISOString(),
-      title: `Visit Note - ${new Date().toLocaleDateString('en-IN')}`,
-      document_url: '/mock/prescription-new.png',
-      notes: newVisitData.notes || 'Clinical notes recorded.',
-      diagnosis: newVisitData.diagnosis || 'N/A',
-      medications: parsedMedications.length > 0 ? parsedMedications : ['No medications entered.'],
-    };
+    try {
+      const response = await fetch('/api/records/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patientId: patient?.id ?? patientId,
+          facilityId: getDoctorById('doc-001')?.facility_id ?? 'fac-001',
+          doctorId: getDoctorById('doc-001')?.id ?? 'doc-001',
+          recordType: 'Prescription',
+          title: selectedTemplate
+            ? `${selectedTemplate.label} - ${new Date().toLocaleDateString('en-IN')}`
+            : `Visit Note - ${new Date().toLocaleDateString('en-IN')}`,
+          notes: newVisitData.notes || 'Clinical notes recorded.',
+          diagnosis: newVisitData.diagnosis || 'N/A',
+          medications: parsedMedications.length > 0 ? parsedMedications : ['No medications entered.'],
+        }),
+      });
 
-    // Keep in-memory data for current UI
-    setRecords((prev) => [newRecord, ...prev]);
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? `Upload failed with status ${response.status}`);
+      }
 
-    // Optional external sync: keep module-level array updated for other components
-    // (this is a demo in-memory store, not persistent)
-    medicalRecords.unshift(newRecord);
+      const payload = (await response.json()) as { record?: MedicalRecord };
+      if (payload.record) {
+        setRecords((prev) => [payload.record as MedicalRecord, ...prev]);
+      }
 
-    toast.success('Visit note saved & synced to patient timeline!', {
-      description: 'Added as a prescription record for this patient.',
-      duration: 5000,
-    });
+      toast.success('Visit note saved & synced to patient timeline!', {
+        description: 'Added as a prescription record for this patient.',
+        duration: 5000,
+      });
 
-    setShowNewVisit(false);
-    setNewVisitData({ diagnosis: '', medications: '', notes: '', followUp: '' });
+      setShowNewVisit(false);
+      setSelectedTemplateId('');
+      setNewVisitData({ diagnosis: '', medications: '', notes: '', followUp: '' });
+    } catch (error) {
+      console.error('Failed to upload visit note.', error);
+      toast.error('Could not save visit note to server.');
+    }
   };
 
   return (
@@ -203,7 +393,41 @@ export default function PatientTimelinePage() {
               </p>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            {queueStatus && (
+              <span
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  background: queueStatusConfig[queueStatus].bgColor,
+                  color: queueStatusConfig[queueStatus].textColor,
+                  fontSize: '12px',
+                  fontWeight: 700,
+                }}
+              >
+                {queueStatusConfig[queueStatus].label}
+              </span>
+            )}
+            <button
+              onClick={handleMarkDiagnosed}
+              disabled={!queueStatus}
+              style={{
+                padding: '12px 18px',
+                borderRadius: '12px',
+                border: 'none',
+                background: queueStatus ? 'linear-gradient(135deg, #16a34a, #15803d)' : '#e2e8f0',
+                color: queueStatus ? '#ffffff' : '#94a3b8',
+                fontSize: '13px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: queueStatus ? '0 4px 14px rgba(22,163,74,0.25)' : 'none',
+              }}
+            >
+              <Activity size={16} />
+              Mark Diagnosed
+            </button>
             <button
               onClick={() => setShowNewVisit(true)}
               style={{
@@ -938,6 +1162,80 @@ export default function PatientTimelinePage() {
 
               {/* Form */}
               <div style={{ padding: '24px 28px' }}>
+                <div
+                  style={{
+                    marginBottom: '20px',
+                    padding: '14px',
+                    borderRadius: '14px',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                  }}
+                >
+                  <label
+                    style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: '#475569',
+                      marginBottom: '8px',
+                    }}
+                  >
+                    Structured Prescription Template
+                  </label>
+                  <select
+                    value={selectedTemplateId}
+                    onChange={(e) => setSelectedTemplateId(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      border: '1.5px solid #e2e8f0',
+                      fontSize: '14px',
+                      color: '#0f172a',
+                      background: '#ffffff',
+                    }}
+                  >
+                    <option value="">Select a template...</option>
+                    {prescriptionTemplates.map((template) => (
+                      <option key={template.id} value={template.id}>
+                        {template.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    <button
+                      type="button"
+                      onClick={handleApplyTemplate}
+                      style={{
+                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        border: '1px solid #99f6e4',
+                        background: '#f0fdfa',
+                        color: '#0f766e',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Apply Template
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleClearTemplate}
+                      style={{
+                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        border: '1px solid #e2e8f0',
+                        background: '#ffffff',
+                        color: '#475569',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
                 <div style={{ marginBottom: '20px' }}>
                   <label
                     style={{

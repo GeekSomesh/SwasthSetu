@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPatientByMobile } from '@/data/mock-data';
+import { findPatientByMobileStore } from '@/lib/server-data';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const patient = getPatientByMobile(mobile);
+  const patient = await findPatientByMobileStore(mobile);
 
   if (!patient) {
     return NextResponse.json(

@@ -1,107 +1,311 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Search, Phone, UserCheck, Clock, ArrowRight, Shield, Users, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
-  getPatientByMobile,
   getPatientById,
   getAge,
-  getRecordsByPatientId,
   generateOTP,
   facilities,
-  patientQueue,
   type Patient,
-  type QueueEntry,
 } from '@/data/mock-data';
-import Link from 'next/link';
+import {
+  enqueuePatient,
+  getPatientQueueStore,
+  markPatientUnderDiagnosis,
+  subscribeToPatientQueue,
+  type QueueStatus,
+} from '@/lib/patient-queue';
+
+type ReceptionStat = 'Patients Today' | 'Consents Pending' | 'Records Synced' | 'In Queue';
+
+type ReceptionQueueRow = {
+  patient: Patient;
+  status: QueueStatus;
+  tokenNumber: number;
+  checkedInAt: string;
+  diagnosisStartedAt: string | null;
+  updatedAt: string;
+};
+
+type PendingConsentEntry = {
+  patientId: string;
+  patientName: string;
+  mobile: string;
+  otp: string;
+  requestedAt: string;
+  attempts: number;
+};
+
+type QueuePriorityMode = 'default' | 'long-wait' | 'elderly';
+
+const PENDING_CONSENT_STORAGE_KEY = 'swasthsetu-pending-consents-v2';
 
 export default function ReceptionPage() {
+  const lookupSectionRef = useRef<HTMLDivElement | null>(null);
+  const queueSectionRef = useRef<HTMLDivElement | null>(null);
+
   const [searchMobile, setSearchMobile] = useState('');
   const [foundPatient, setFoundPatient] = useState<Patient | null>(null);
   const [searchDone, setSearchDone] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
-  const [generatedOTP, setGeneratedOTP] = useState('');
   const [otpDigits, setOtpDigits] = useState(['', '', '', '']);
+  const [foundPatientRecordCount, setFoundPatientRecordCount] = useState(0);
+  const [foundPatientFacilityIds, setFoundPatientFacilityIds] = useState<string[]>([]);
   const [consentGranted, setConsentGranted] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [activeStat, setActiveStat] = useState<'Patients Today' | 'Consents Pending' | 'Records Synced' | 'In Queue'>('In Queue');
-  const [queuedPatients, setQueuedPatients] = useState<
-    { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' }[]
-  >([]);
+  const [activeStat, setActiveStat] = useState<ReceptionStat>('In Queue');
+  const [queuePriorityMode, setQueuePriorityMode] = useState<QueuePriorityMode>('default');
+  const [nowTs, setNowTs] = useState(() => new Date().getTime());
+  const [queueStore, setQueueStore] = useState(() => getPatientQueueStore());
+  const [pendingConsents, setPendingConsents] = useState<PendingConsentEntry[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const raw = window.localStorage.getItem(PENDING_CONSENT_STORAGE_KEY);
+    if (!raw) return [];
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter((entry): entry is PendingConsentEntry => {
+        if (!entry || typeof entry !== 'object') return false;
+        const item = entry as Partial<PendingConsentEntry>;
+        return (
+          typeof item.patientId === 'string' &&
+          typeof item.patientName === 'string' &&
+          typeof item.mobile === 'string' &&
+          typeof item.otp === 'string' &&
+          typeof item.requestedAt === 'string' &&
+          typeof item.attempts === 'number'
+        );
+      });
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
-    const storageKey = 'swasthsetu-reception-queue';
-    let persisted: { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' }[] = [];
+    const unsubscribe = subscribeToPatientQueue((nextStore) => {
+      setQueueStore(nextStore);
+    });
+    return unsubscribe;
+  }, []);
 
-    if (typeof window !== 'undefined') {
-      const raw = localStorage.getItem(storageKey);
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            persisted = parsed;
-          }
-        } catch {
-          persisted = [];
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.localStorage.setItem(
+      PENDING_CONSENT_STORAGE_KEY,
+      JSON.stringify(pendingConsents)
+    );
+  }, [pendingConsents]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNowTs(new Date().getTime());
+    }, 60000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadPatientTimelineSummary() {
+      if (!foundPatient) {
+        setFoundPatientRecordCount(0);
+        setFoundPatientFacilityIds([]);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `/api/records/timeline?patientId=${encodeURIComponent(foundPatient.id)}`
+        );
+        if (!response.ok) {
+          throw new Error(`Timeline fetch failed with status ${response.status}`);
         }
+
+        const payload = (await response.json()) as {
+          records?: Array<{ facility_id?: string }>;
+        };
+        if (!isMounted) return;
+
+        const records = Array.isArray(payload.records) ? payload.records : [];
+        const facilityIds = [
+          ...new Set(
+            records
+              .map((record) => record.facility_id)
+              .filter((facilityId): facilityId is string => Boolean(facilityId))
+          ),
+        ];
+
+        setFoundPatientRecordCount(records.length);
+        setFoundPatientFacilityIds(facilityIds);
+      } catch (error) {
+        console.error('Failed to fetch patient timeline summary.', error);
+        if (!isMounted) return;
+        setFoundPatientRecordCount(0);
+        setFoundPatientFacilityIds([]);
       }
     }
 
-    if (persisted.length > 0) {
-      setQueuedPatients(persisted);
-      return;
-    }
+    loadPatientTimelineSummary();
 
-    if (patientQueue.length > 0) {
-      const reconstructed = patientQueue
-        .map((entry: QueueEntry) => {
-          const patient = getPatientById(entry.patient_id);
-          return patient ? { patient, status: entry.status === 'RecordsSynced' ? 'RecordsSynced' : 'Waiting' } : null;
-        })
-        .filter((item): item is { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' } => Boolean(item));
-      setQueuedPatients(reconstructed);
-    }
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [foundPatient]);
 
-  const persistQueue = (nextQueue: { patient: Patient; status: 'Waiting' | 'RecordsSynced' | 'InConsultation' }[]) => {
-    setQueuedPatients(nextQueue);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('swasthsetu-reception-queue', JSON.stringify(nextQueue));
-    }
+  const queuedPatients: ReceptionQueueRow[] = queueStore.queue
+    .map((entry) => {
+      const patient = getPatientById(entry.patientId);
+      if (!patient) return null;
+      return {
+        patient,
+        status: entry.status,
+        tokenNumber: entry.tokenNumber,
+        checkedInAt: entry.checkedInAt,
+        diagnosisStartedAt: entry.diagnosisStartedAt,
+        updatedAt: entry.updatedAt,
+      };
+    })
+    .filter((item): item is ReceptionQueueRow => Boolean(item));
+
+  const getWaitingMinutes = (checkedInAt: string) =>
+    Math.max(0, Math.floor((nowTs - new Date(checkedInAt).getTime()) / 60000));
+
+  const scrollToSection = (section: 'lookup' | 'queue') => {
+    const targetRef = section === 'lookup' ? lookupSectionRef : queueSectionRef;
+    targetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const handleSearch = () => {
-    if (searchMobile.length < 10) {
+  const runSearchByMobile = async (mobile: string) => {
+    if (mobile.length < 10) {
       toast.error('Please enter a valid 10-digit mobile number');
       return;
     }
+
+    setSearchMobile(mobile);
     setIsSearching(true);
     setConsentGranted(false);
     setShowOTP(false);
     setOtpDigits(['', '', '', '']);
-    setTimeout(() => {
-      const patient = getPatientByMobile(searchMobile);
-      setFoundPatient(patient || null);
-      setSearchDone(true);
-      setIsSearching(false);
-      if (patient) {
-        toast.success(`Patient found: ${patient.name}`);
-      } else {
-        toast.error('No patient found with this mobile number');
+
+    try {
+      const response = await fetch('/api/patients/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ mobile }),
+      });
+
+      if (!response.ok) {
+        setFoundPatient(null);
+        setSearchDone(true);
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        toast.error(payload?.error ?? 'No patient found with this mobile number');
+        return;
       }
-    }, 600);
+
+      const payload = (await response.json()) as { patient?: Patient };
+      const patient = payload.patient ?? null;
+      setFoundPatient(patient);
+      setSearchDone(true);
+
+      if (!patient) {
+        toast.error('No patient found with this mobile number');
+        return;
+      }
+
+      const pendingConsent = pendingConsents.find((entry) => entry.patientId === patient.id);
+      if (pendingConsent) {
+        setShowOTP(true);
+        toast.info(`Pending consent found for ${patient.name}`, {
+          description: 'You can verify existing OTP or resend a new one.',
+        });
+      } else {
+        toast.success(`Patient found: ${patient.name}`);
+      }
+    } catch (error) {
+      console.error('Failed to search patient by mobile.', error);
+      setFoundPatient(null);
+      setSearchDone(true);
+      toast.error('Unable to search patient right now.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const issueConsentOtp = async (patient: Patient, mode: 'new' | 'resend') => {
+    const requestedAt = new Date().toISOString();
+    const defaultFacilityId = facilities[0]?.id ?? 'fac-001';
+    let otp = generateOTP();
+
+    try {
+      const response = await fetch('/api/consent/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patientId: patient.id,
+          facilityId: defaultFacilityId,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? `Consent request failed with status ${response.status}`);
+      }
+
+      const payload = (await response.json()) as { otp_hint?: string };
+      otp = payload.otp_hint ?? otp;
+    } catch (error) {
+      console.error('Failed to request consent OTP via API.', error);
+      toast.error('Unable to request OTP from server.');
+      return;
+    }
+
+    setShowOTP(true);
+    setConsentGranted(false);
+    setOtpDigits(['', '', '', '']);
+
+    setPendingConsents((prev) => {
+      const existing = prev.find((item) => item.patientId === patient.id);
+      const nextAttempts = existing ? existing.attempts + 1 : 1;
+      const rest = prev.filter((item) => item.patientId !== patient.id);
+
+      const nextEntry: PendingConsentEntry = {
+        patientId: patient.id,
+        patientName: patient.name,
+        mobile: patient.mobile_number,
+        otp,
+        requestedAt,
+        attempts: nextAttempts,
+      };
+
+      return [nextEntry, ...rest].slice(0, 12);
+    });
+
+    toast.info(
+      `${mode === 'resend' ? 'OTP resent' : 'OTP sent'} to ****${patient.mobile_number.slice(-4)}`,
+      {
+        description: `Demo OTP: ${otp}`,
+        duration: 10000,
+      }
+    );
+  };
+
+  const handleSearch = () => {
+    runSearchByMobile(searchMobile);
   };
 
   const handleRequestConsent = () => {
-    const otp = generateOTP();
-    setGeneratedOTP(otp);
-    setShowOTP(true);
-    toast.info(`OTP sent to patient's mobile: ****${searchMobile.slice(-4)}`, {
-      description: `Demo OTP: ${otp}`,
-      duration: 10000,
-    });
+    if (!foundPatient) {
+      toast.error('Search and select a patient first');
+      return;
+    }
+    issueConsentOtp(foundPatient, 'new');
   };
 
   const handleOTPChange = (index: number, value: string) => {
@@ -117,51 +321,184 @@ export default function ReceptionPage() {
     }
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     const enteredOTP = otpDigits.join('');
-    if (enteredOTP === generatedOTP) {
+    if (!foundPatient) {
+      toast.error('Search and select a patient first');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/consent/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patientId: foundPatient.id,
+          otp: enteredOTP,
+        }),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? `OTP verification failed with status ${response.status}`);
+      }
+
       setConsentGranted(true);
       toast.success('Consent granted! Records are now accessible.', {
         description: 'Access valid for 24 hours',
         duration: 5000,
       });
-      // Add or update patient in queue
-      if (foundPatient) {
-        const nextQueue = [
-          ...queuedPatients.filter((q) => q.patient.id !== foundPatient.id),
-          { patient: foundPatient, status: 'RecordsSynced' as const },
-        ];
-        persistQueue(nextQueue);
-      }
-    } else {
+
+      setPendingConsents((prev) =>
+        prev.filter((entry) => entry.patientId !== foundPatient.id)
+      );
+      const nextStore = enqueuePatient(foundPatient.id);
+      setQueueStore(nextStore);
+      setActiveStat('In Queue');
+      setQueuePriorityMode('long-wait');
+      scrollToSection('queue');
+    } catch (error) {
+      console.error('Failed to verify OTP via API.', error);
       toast.error('Invalid OTP. Please try again.');
     }
   };
 
-  const recordCount = foundPatient
-    ? getRecordsByPatientId(foundPatient.id).length
-    : 0;
+  const recordCount = foundPatient ? foundPatientRecordCount : 0;
 
-  const sourceFacilities = foundPatient
-    ? [
-        ...new Set(
-          getRecordsByPatientId(foundPatient.id).map((r) => r.facility_id)
-        ),
-      ]
-    : [];
+  const sourceFacilities = foundPatient ? foundPatientFacilityIds : [];
 
-  const patientsTodayCount = queuedPatients.length;
-  const pendingCount = queuedPatients.filter((q) => q.status === 'Waiting').length;
-  const syncedCount = queuedPatients.filter((q) => q.status === 'RecordsSynced').length;
-  const inQueueCount = queuedPatients.filter((q) => q.status !== 'InConsultation').length;
+  const foundPatientQueueEntry = foundPatient
+    ? queuedPatients.find((row) => row.patient.id === foundPatient.id)
+    : undefined;
+
+  const completedTodayCount = queueStore.completed.length;
+  const patientsTodayCount = queuedPatients.length + completedTodayCount;
+  const pendingCount = pendingConsents.length;
+  const syncedCount = queuedPatients.length;
+  const inQueueCount = queuedPatients.filter((q) => q.status === 'Waiting').length;
+  const longWaitCount = queuedPatients.filter(
+    (q) => q.status === 'Waiting' && getWaitingMinutes(q.checkedInAt) >= 20
+  ).length;
 
   const filteredQueue = queuedPatients.filter((q) => {
     if (activeStat === 'Patients Today') return true;
-    if (activeStat === 'Consents Pending') return q.status === 'Waiting';
-    if (activeStat === 'Records Synced') return q.status === 'RecordsSynced';
-    if (activeStat === 'In Queue') return q.status !== 'InConsultation';
+    if (activeStat === 'Consents Pending') return false;
+    if (activeStat === 'Records Synced') return true;
+    if (activeStat === 'In Queue') return q.status === 'Waiting';
     return true;
   });
+
+  const sortedFilteredQueue = (() => {
+    const next = [...filteredQueue];
+
+    if (queuePriorityMode === 'elderly') {
+      return next.sort(
+        (a, b) => getAge(b.patient.date_of_birth) - getAge(a.patient.date_of_birth)
+      );
+    }
+
+    if (queuePriorityMode === 'long-wait' || activeStat === 'In Queue') {
+      return next.sort(
+        (a, b) =>
+          new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime()
+      );
+    }
+
+    return next.sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  })();
+
+  const formatToken = (tokenNumber: number) => `T-${String(tokenNumber).padStart(3, '0')}`;
+
+  const averageConsultationMinutes = useMemo(() => {
+    const durations = queueStore.completed
+      .map((entry) => {
+        const startTime = entry.diagnosisStartedAt ?? entry.checkedInAt;
+        const minutes = Math.floor(
+          (new Date(entry.completedAt).getTime() - new Date(startTime).getTime()) / 60000
+        );
+        return Number.isFinite(minutes) && minutes > 1 ? minutes : null;
+      })
+      .filter((item): item is number => Boolean(item));
+
+    if (durations.length === 0) return 12;
+    const avg = Math.round(durations.reduce((sum, value) => sum + value, 0) / durations.length);
+    return Math.min(25, Math.max(6, avg));
+  }, [queueStore.completed]);
+
+  const smartQueueRows = (() => {
+    const ordered = [...queuedPatients].sort(
+      (a, b) => new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime()
+    );
+
+    const hasActiveConsultation = ordered.some((item) => item.status === 'UnderDiagnosis');
+
+    return ordered.map((item, index) => {
+      if (item.status === 'UnderDiagnosis') {
+        return {
+          ...item,
+          etaMinutes: 0,
+          queueRank: 0,
+          etaLabel: 'In consultation',
+          stateLabel: 'With doctor',
+        };
+      }
+
+      const waitingPosition = ordered
+        .slice(0, index + 1)
+        .filter((entry) => entry.status === 'Waiting').length;
+      const peopleAhead = waitingPosition - 1 + (hasActiveConsultation ? 1 : 0);
+      const etaMinutes = peopleAhead * averageConsultationMinutes;
+      const etaLabel =
+        etaMinutes <= 0
+          ? 'Next'
+          : `${etaMinutes}-${etaMinutes + Math.round(averageConsultationMinutes * 0.6)} min`;
+
+      return {
+        ...item,
+        etaMinutes,
+        queueRank: waitingPosition,
+        etaLabel,
+        stateLabel: peopleAhead === 0 ? 'Next up' : `${peopleAhead} ahead`,
+      };
+    });
+  })();
+
+  const callNextPatient = () => {
+    const nextWaiting = [...queuedPatients]
+      .filter((item) => item.status === 'Waiting')
+      .sort((a, b) => new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime())[0];
+
+    if (!nextWaiting) {
+      toast.info('No waiting patients in queue.');
+      return;
+    }
+
+    const didMove = markPatientUnderDiagnosis(nextWaiting.patient.id);
+    if (didMove) {
+      setQueueStore(getPatientQueueStore());
+      toast.success(
+        `Called ${nextWaiting.patient.name} (${formatToken(nextWaiting.tokenNumber)}) to consultation`
+      );
+      return;
+    }
+
+    toast.info('This patient is already in consultation.');
+  };
+
+  const queueEmptyTitle =
+    activeStat === 'Consents Pending'
+      ? 'Consent follow-up view is active'
+      : 'No patients in queue yet';
+  const queueEmptySubtitle =
+    activeStat === 'Consents Pending'
+      ? pendingCount > 0
+        ? `${pendingCount} pending consent case(s) are shown in Consent Worklist on the left.`
+        : 'No pending consent cases right now.'
+      : 'Search and verify a patient to add them';
 
   const stats = [
     {
@@ -170,6 +507,7 @@ export default function ReceptionPage() {
       icon: Users,
       color: '#0f766e',
       bg: '#f0fdfa',
+      helper: `${completedTodayCount} diagnosed`,
     },
     {
       label: 'Consents Pending',
@@ -177,6 +515,7 @@ export default function ReceptionPage() {
       icon: Shield,
       color: '#f59e0b',
       bg: '#fffbeb',
+      helper: pendingCount > 0 ? 'Needs follow-up' : 'All clear',
     },
     {
       label: 'Records Synced',
@@ -184,6 +523,7 @@ export default function ReceptionPage() {
       icon: FileText,
       color: '#3b82f6',
       bg: '#eff6ff',
+      helper: syncedCount > 0 ? 'Doctor-ready' : 'No active cases',
     },
     {
       label: 'In Queue',
@@ -191,8 +531,122 @@ export default function ReceptionPage() {
       icon: Clock,
       color: '#8b5cf6',
       bg: '#f5f3ff',
+      helper: `${longWaitCount} long wait`,
     },
   ];
+
+  const handleStatClick = (label: ReceptionStat) => {
+    setActiveStat(label);
+    setQueuePriorityMode('default');
+
+    if (label === 'Patients Today') {
+      scrollToSection('queue');
+      toast.info(`Daily throughput: ${patientsTodayCount} total visits`, {
+        description: `${completedTodayCount} diagnosed, ${inQueueCount} still in queue.`,
+      });
+      return;
+    }
+
+    if (label === 'Consents Pending') {
+      scrollToSection('lookup');
+      toast.info(`Consent follow-up list: ${pendingCount}`, {
+        description: 'Open pending consents and resend OTP for delayed patients.',
+      });
+      return;
+    }
+
+    if (label === 'Records Synced') {
+      scrollToSection('queue');
+      toast.info(`${syncedCount} patients already synced for doctor view`, {
+        description: 'Hand over patients to doctor in queue order.',
+      });
+      return;
+    }
+
+    if (label === 'In Queue') {
+      setQueuePriorityMode('long-wait');
+      scrollToSection('queue');
+      toast.info('Queue triage enabled', {
+        description: `${longWaitCount} patients are waiting for 20+ minutes.`,
+      });
+    }
+  };
+
+  const statPlaybook =
+    activeStat === 'Patients Today'
+      ? {
+          title: 'Daily Operations Snapshot',
+          description:
+            'Monitor arrivals vs completed consultations and identify bottlenecks early.',
+          ctaLabel: 'Prioritize Long Wait Cases',
+          onAction: () => {
+            setActiveStat('In Queue');
+            setQueuePriorityMode('long-wait');
+            scrollToSection('queue');
+          },
+        }
+      : activeStat === 'Consents Pending'
+        ? {
+            title: 'Consent Compliance Workflow',
+            description:
+              'Follow up pending OTP consents to reduce care delays and improve legal compliance.',
+            ctaLabel: 'Open Consent Worklist',
+            onAction: () => scrollToSection('lookup'),
+          }
+        : activeStat === 'Records Synced'
+          ? {
+              title: 'Doctor Handover Ready',
+              description:
+                'These patients already have consent and can be routed to doctor queue immediately.',
+              ctaLabel: 'Sort by Elderly Priority',
+              onAction: () => {
+                setQueuePriorityMode('elderly');
+                scrollToSection('queue');
+              },
+            }
+          : {
+              title: 'Active Queue Triage',
+              description:
+                'Use wait-time priority and elderly-first triage to reduce risk and improve patient experience.',
+              ctaLabel: 'Switch to Elderly Priority',
+              onAction: () => {
+                setQueuePriorityMode('elderly');
+                scrollToSection('queue');
+              },
+            };
+
+  const completedPatients = [...queueStore.completed]
+    .slice(-5)
+    .reverse()
+    .map((entry) => {
+      const patient = getPatientById(entry.patientId);
+      return patient
+        ? {
+            patient,
+            tokenNumber: entry.tokenNumber,
+            completedAt: entry.completedAt,
+          }
+        : null;
+    })
+    .filter(
+      (item): item is { patient: Patient; tokenNumber: number; completedAt: string } => Boolean(item)
+    );
+
+  const queueStatusStyles: Record<
+    QueueStatus,
+    { label: string; bg: string; color: string }
+  > = {
+    Waiting: {
+      label: 'Waiting',
+      bg: '#fffbeb',
+      color: '#92400e',
+    },
+    UnderDiagnosis: {
+      label: 'Under Diagnosis',
+      bg: '#eff6ff',
+      color: '#1d4ed8',
+    },
+  };
 
   return (
     <div>
@@ -208,7 +662,7 @@ export default function ReceptionPage() {
         {stats.map((stat) => (
           <button
             key={stat.label}
-            onClick={() => setActiveStat(stat.label as typeof activeStat)}
+            onClick={() => handleStatClick(stat.label as ReceptionStat)}
             style={{
               background: activeStat === stat.label ? '#e0f7fa' : '#ffffff',
               borderRadius: '16px',
@@ -249,9 +703,166 @@ export default function ReceptionPage() {
               <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>
                 {stat.label}
               </p>
+              <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                {stat.helper}
+              </p>
             </div>
           </button>
         ))}
+      </div>
+
+      <div
+        style={{
+          background: '#ffffff',
+          borderRadius: '16px',
+          padding: '16px 18px',
+          border: '1px solid #e2e8f0',
+          boxShadow: 'var(--shadow-sm)',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+        }}
+      >
+        <div>
+          <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+            {statPlaybook.title}
+          </p>
+          <p style={{ fontSize: '12px', color: '#475569', marginTop: '3px' }}>
+            {statPlaybook.description}
+          </p>
+        </div>
+        <button
+          onClick={statPlaybook.onAction}
+          style={{
+            padding: '10px 14px',
+            borderRadius: '10px',
+            border: '1px solid #99f6e4',
+            background: '#f0fdfa',
+            color: '#0f766e',
+            fontSize: '12px',
+            fontWeight: 700,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {statPlaybook.ctaLabel}
+        </button>
+      </div>
+
+      <div
+        style={{
+          background: '#ffffff',
+          borderRadius: '18px',
+          border: '1px solid #e2e8f0',
+          boxShadow: 'var(--shadow-sm)',
+          marginBottom: '22px',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            padding: '14px 18px',
+            borderBottom: '1px solid #e2e8f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '10px',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div>
+            <p style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>
+              Smart Queue · Token ETA Board
+            </p>
+            <p style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
+              Avg consult: ~{averageConsultationMinutes} min · Waiting: {inQueueCount}
+            </p>
+          </div>
+          <button
+            onClick={callNextPatient}
+            style={{
+              padding: '9px 14px',
+              borderRadius: '10px',
+              border: '1px solid #99f6e4',
+              background: '#f0fdfa',
+              color: '#0f766e',
+              fontSize: '12px',
+              fontWeight: 700,
+            }}
+          >
+            Call Next Patient
+          </button>
+        </div>
+        <div style={{ padding: '10px 12px' }}>
+          {smartQueueRows.length === 0 ? (
+            <p style={{ fontSize: '12px', color: '#64748b', padding: '8px' }}>
+              No active tokens. Verify OTP for a patient to generate token and ETA.
+            </p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {smartQueueRows.map((row) => (
+                <div
+                  key={`${row.patient.id}-${row.tokenNumber}-${row.updatedAt}`}
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '96px 1.8fr 1fr 1fr',
+                    gap: '12px',
+                    alignItems: 'center',
+                    borderRadius: '10px',
+                    border: '1px solid #f1f5f9',
+                    background: '#f8fafc',
+                    padding: '10px 12px',
+                  }}
+                >
+                  <span
+                    style={{
+                      display: 'inline-flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      padding: '6px 10px',
+                      borderRadius: '999px',
+                      background: '#ccfbf1',
+                      color: '#134e4a',
+                      fontSize: '11px',
+                      fontWeight: 800,
+                    }}
+                  >
+                    {formatToken(row.tokenNumber)}
+                  </span>
+                  <div>
+                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+                      {row.patient.name}
+                    </p>
+                    <p style={{ fontSize: '11px', color: '#64748b' }}>
+                      Checked-in{' '}
+                      {new Date(row.checkedInAt).toLocaleTimeString('en-IN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>
+                      Queue State
+                    </p>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
+                      {row.stateLabel}
+                    </p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>
+                      ETA
+                    </p>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#0f172a' }}>
+                      {row.etaLabel}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Main Content - 2 column */}
@@ -260,6 +871,7 @@ export default function ReceptionPage() {
         <div>
           {/* Search Card */}
           <div
+            ref={lookupSectionRef}
             style={{
               background: '#ffffff',
               borderRadius: '20px',
@@ -301,6 +913,7 @@ export default function ReceptionPage() {
               >
                 <Phone size={18} color="#94a3b8" />
                 <input
+                  id="reception-mobile-search"
                   type="tel"
                   placeholder="Enter 10-digit mobile number"
                   value={searchMobile}
@@ -350,10 +963,21 @@ export default function ReceptionPage() {
               <span style={{ fontSize: '12px', color: '#94a3b8' }}>
                 Try:
               </span>
-              {['9876543210', '9876543230', '9876543250'].map((num) => (
+              {[
+                '9876543210',
+                '9876543220',
+                '9876543230',
+                '9876543240',
+                '9876543250',
+                '9876543260',
+                '9876543270',
+                '9876543280',
+              ].map((num) => (
                 <button
                   key={num}
-                  onClick={() => { setSearchMobile(num); }}
+                  onClick={() => {
+                    runSearchByMobile(num);
+                  }}
                   style={{
                     padding: '4px 10px',
                     borderRadius: '8px',
@@ -368,6 +992,107 @@ export default function ReceptionPage() {
               ))}
             </div>
           </div>
+
+          {pendingConsents.length > 0 && (
+            <div
+              style={{
+                background: '#ffffff',
+                borderRadius: '16px',
+                padding: '18px',
+                border: '1px solid #fde68a',
+                boxShadow: 'var(--shadow-sm)',
+                marginBottom: '20px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '12px',
+                }}
+              >
+                <p style={{ fontSize: '14px', fontWeight: 700, color: '#92400e' }}>
+                  Consent Worklist
+                </p>
+                <span
+                  style={{
+                    padding: '3px 10px',
+                    borderRadius: '999px',
+                    background: '#fffbeb',
+                    border: '1px solid #fde68a',
+                    color: '#92400e',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                  }}
+                >
+                  {pendingConsents.length} pending
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {pendingConsents.slice(0, 5).map((entry) => (
+                  <div
+                    key={entry.patientId}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: '10px',
+                      border: '1px solid #f1f5f9',
+                      background: '#f8fafc',
+                      padding: '10px 12px',
+                    }}
+                  >
+                    <div>
+                      <p style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a' }}>
+                        {entry.patientName}
+                      </p>
+                      <p style={{ fontSize: '11px', color: '#64748b' }}>
+                        +91 {entry.mobile} · OTP attempts: {entry.attempts}
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button
+                        onClick={() => runSearchByMobile(entry.mobile)}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #e2e8f0',
+                          background: '#ffffff',
+                          color: '#334155',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                        }}
+                      >
+                        Open
+                      </button>
+                      <button
+                        onClick={() => {
+                          const patient = getPatientById(entry.patientId);
+                          if (!patient) return;
+                          setFoundPatient(patient);
+                          setSearchDone(true);
+                          setSearchMobile(patient.mobile_number);
+                          issueConsentOtp(patient, 'resend');
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #f59e0b',
+                          background: '#fffbeb',
+                          color: '#92400e',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                        }}
+                      >
+                        Resend
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Patient Info Card */}
           <AnimatePresence>
@@ -442,7 +1167,9 @@ export default function ReceptionPage() {
                       }}
                     >
                       <UserCheck size={14} />
-                      Records Synced
+                      {foundPatientQueueEntry
+                        ? `Token ${formatToken(foundPatientQueueEntry.tokenNumber)}`
+                        : 'Records Synced'}
                     </div>
                   )}
                 </div>
@@ -641,11 +1368,28 @@ export default function ReceptionPage() {
                       >
                         Verify & Grant Access
                       </button>
+                      <button
+                        onClick={() => {
+                          if (foundPatient) issueConsentOtp(foundPatient, 'resend');
+                        }}
+                        style={{
+                          width: '100%',
+                          marginTop: '10px',
+                          padding: '10px',
+                          borderRadius: '12px',
+                          border: '1px solid #e2e8f0',
+                          background: '#f8fafc',
+                          color: '#475569',
+                          fontSize: '12px',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Resend OTP
+                      </button>
                     </motion.div>
                   )
                 ) : (
-                  <Link
-                    href={`/doctor/patient/${foundPatient.id}`}
+                  <div
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -659,13 +1403,11 @@ export default function ReceptionPage() {
                       color: '#fff',
                       fontSize: '14px',
                       fontWeight: 600,
-                      textDecoration: 'none',
                       boxShadow: '0 4px 14px rgba(16,185,129,0.25)',
                     }}
                   >
-                    View Patient Timeline
-                    <ArrowRight size={16} />
-                  </Link>
+                    Patient Ready for Doctor
+                  </div>
                 )}
               </motion.div>
             )}
@@ -674,6 +1416,7 @@ export default function ReceptionPage() {
 
         {/* Right: Patient Queue */}
         <div
+          ref={queueSectionRef}
           style={{
             background: '#ffffff',
             borderRadius: '20px',
@@ -721,11 +1464,11 @@ export default function ReceptionPage() {
                 fontWeight: 600,
               }}
             >
-              {filteredQueue.length} in queue
+              {sortedFilteredQueue.length} shown
             </span>
           </div>
 
-          {filteredQueue.length === 0 ? (
+          {sortedFilteredQueue.length === 0 ? (
             <div
               style={{
                 padding: '48px 24px',
@@ -741,17 +1484,16 @@ export default function ReceptionPage() {
                 style={{ margin: '0 auto 12px' }}
               />
               <p style={{ fontSize: '14px', color: '#475569', fontWeight: 500 }}>
-                No patients in queue yet
+                {queueEmptyTitle}
               </p>
               <p style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px' }}>
-                Search and verify a patient to add them
+                {queueEmptySubtitle}
               </p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {filteredQueue.map((q) => (
-                <Link
-                  href={`/doctor/patient/${q.patient.id}`}
+              {sortedFilteredQueue.map((q) => (
+                <div
                   key={q.patient.id}
                   style={{
                     display: 'flex',
@@ -761,16 +1503,7 @@ export default function ReceptionPage() {
                     borderRadius: '14px',
                     background: '#f8fafc',
                     border: '1px solid #e2e8f0',
-                    textDecoration: 'none',
                     transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#f0fdfa';
-                    e.currentTarget.style.borderColor = '#99f6e4';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#f8fafc';
-                    e.currentTarget.style.borderColor = '#e2e8f0';
                   }}
                 >
                   <div
@@ -805,22 +1538,83 @@ export default function ReceptionPage() {
                       {q.patient.gender} ·{' '}
                       {getAge(q.patient.date_of_birth)} yrs
                     </p>
+                    <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+                      {formatToken(q.tokenNumber)} · Waiting: {getWaitingMinutes(q.checkedInAt)} min
+                    </p>
                   </div>
                   <div
                     style={{
                       padding: '4px 10px',
                       borderRadius: '8px',
-                      background: '#d1fae5',
-                      color: '#065f46',
+                      background: queueStatusStyles[q.status].bg,
+                      color: queueStatusStyles[q.status].color,
                       fontSize: '11px',
                       fontWeight: 600,
                     }}
                   >
-                    ✓ Synced
+                    {queueStatusStyles[q.status].label}
                   </div>
                   <ArrowRight size={16} color="#94a3b8" />
-                </Link>
+                </div>
               ))}
+            </div>
+          )}
+
+          {completedPatients.length > 0 && (
+            <div style={{ marginTop: '18px' }}>
+              <p
+                style={{
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  color: '#475569',
+                  marginBottom: '8px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                Recently Diagnosed
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {completedPatients.map((entry) => (
+                  <div
+                    key={`${entry.patient.id}-${entry.completedAt}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '10px 12px',
+                      borderRadius: '10px',
+                      background: '#ecfdf5',
+                      border: '1px solid #bbf7d0',
+                    }}
+                  >
+                    <div>
+                      <p style={{ fontSize: '13px', fontWeight: 600, color: '#14532d' }}>
+                        {entry.patient.name} · {formatToken(entry.tokenNumber)}
+                      </p>
+                      <p style={{ fontSize: '11px', color: '#166534' }}>
+                        Completed at{' '}
+                        {new Date(entry.completedAt).toLocaleTimeString('en-IN', {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    </div>
+                    <span
+                      style={{
+                        padding: '4px 10px',
+                        borderRadius: '999px',
+                        background: '#22c55e',
+                        color: '#ffffff',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                      }}
+                    >
+                      Done
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

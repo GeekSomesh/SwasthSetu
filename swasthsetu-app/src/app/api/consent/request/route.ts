@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateOTP, getPatientById, consents } from '@/data/mock-data';
+import { createConsentRequestStore, findPatientByIdStore } from '@/lib/server-data';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,23 +12,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const patient = getPatientById(patientId);
+  const patient = await findPatientByIdStore(patientId);
   if (!patient) {
     return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
   }
 
-  const otp = generateOTP();
-
-  // Store consent as Pending
-  consents.push({
-    id: `consent-${Date.now()}`,
-    patient_id: patientId,
-    facility_id: facilityId,
-    status: 'Pending',
-    otp,
-    granted_at: null,
-    expires_at: null,
-  });
+  const { otp } = await createConsentRequestStore(patientId, facilityId);
 
   // In production, this would send an actual SMS
   return NextResponse.json({

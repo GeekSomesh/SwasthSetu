@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { consents } from '@/data/mock-data';
+import { verifyConsentStore } from '@/lib/server-data';
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,9 +12,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const consent = consents.find(
-    (c) => c.patient_id === patientId && c.otp === otp && c.status === 'Pending'
-  );
+  const consent = await verifyConsentStore(patientId, otp);
 
   if (!consent) {
     return NextResponse.json(
@@ -22,11 +20,6 @@ export async function POST(request: NextRequest) {
       { status: 401 }
     );
   }
-
-  // Grant consent for 24 hours
-  consent.status = 'Granted';
-  consent.granted_at = new Date().toISOString();
-  consent.expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
   return NextResponse.json({
     message: 'Consent granted successfully',

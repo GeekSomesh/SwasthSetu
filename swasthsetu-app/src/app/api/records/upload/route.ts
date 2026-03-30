@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { medicalRecords } from '@/data/mock-data';
+import { type RecordType } from '@/data/mock-data';
+import { createMedicalRecordStore } from '@/lib/server-data';
+
+const VALID_RECORD_TYPES: RecordType[] = [
+  'Prescription',
+  'LabReport',
+  'Scan',
+  'DischargeSummary',
+];
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -12,22 +20,27 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const newRecord = {
-    id: `rec-${Date.now()}`,
-    patient_id: patientId,
-    facility_id: facilityId,
-    doctor_id: doctorId,
-    record_type: recordType,
-    date: new Date().toISOString().split('T')[0],
-    title,
-    document_url: '/mock/new-visit.png',
-    notes: notes || '',
-    diagnosis: diagnosis || undefined,
-    medications: medications || undefined,
-  };
+  if (!VALID_RECORD_TYPES.includes(recordType as RecordType)) {
+    return NextResponse.json(
+      { error: 'Invalid recordType. Must be Prescription, LabReport, Scan, or DischargeSummary.' },
+      { status: 400 }
+    );
+  }
 
-  // Add to in-memory store
-  medicalRecords.push(newRecord);
+  const parsedMedications = Array.isArray(medications)
+    ? medications.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+    : undefined;
+
+  const newRecord = await createMedicalRecordStore({
+    patientId,
+    facilityId,
+    doctorId,
+    recordType: recordType as RecordType,
+    title,
+    notes: typeof notes === 'string' ? notes : '',
+    diagnosis: typeof diagnosis === 'string' ? diagnosis : undefined,
+    medications: parsedMedications,
+  });
 
   return NextResponse.json({
     message: 'Record uploaded and synced successfully',
