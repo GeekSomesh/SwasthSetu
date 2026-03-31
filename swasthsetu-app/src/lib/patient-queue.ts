@@ -4,6 +4,9 @@ export interface QueuePatientEntry {
   patientId: string;
   status: QueueStatus;
   tokenNumber: number;
+  isEmergency: boolean;
+  emergencyFlaggedAt: string | null;
+  emergencyReason: string | null;
   checkedInAt: string;
   diagnosisStartedAt: string | null;
   updatedAt: string;
@@ -13,6 +16,8 @@ export interface QueuePatientEntry {
 export interface CompletedConsultationEntry {
   patientId: string;
   tokenNumber: number;
+  wasEmergency: boolean;
+  emergencyReason: string | null;
   checkedInAt: string;
   diagnosisStartedAt: string | null;
   completedAt: string;
@@ -25,6 +30,12 @@ export interface PatientQueueStore {
   lastTokenNumber: number;
 }
 
+export interface EnqueuePatientOptions {
+  doctorId?: string;
+  isEmergency?: boolean;
+  emergencyReason?: string | null;
+}
+
 const STORAGE_KEY = 'swasthsetu-patient-queue-v2';
 const CHANGE_EVENT = 'swasthsetu-patient-queue:changed';
 const DEFAULT_DOCTOR_ID = 'doc-001';
@@ -35,6 +46,12 @@ function createEmptyStore(): PatientQueueStore {
 
 function isQueueStatus(value: unknown): value is QueueStatus {
   return value === 'Waiting' || value === 'UnderDiagnosis';
+}
+
+function normalizeEmergencyReason(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }
 
 function normalizeStore(value: unknown): PatientQueueStore {
@@ -73,6 +90,10 @@ function normalizeStore(value: unknown): PatientQueueStore {
           patientId: item.patientId,
           status: item.status,
           tokenNumber,
+          isEmergency: Boolean(item.isEmergency),
+          emergencyFlaggedAt:
+            typeof item.emergencyFlaggedAt === 'string' ? item.emergencyFlaggedAt : null,
+          emergencyReason: normalizeEmergencyReason(item.emergencyReason),
           checkedInAt: item.checkedInAt,
           diagnosisStartedAt:
             typeof item.diagnosisStartedAt === 'string' ? item.diagnosisStartedAt : null,
@@ -86,7 +107,9 @@ function normalizeStore(value: unknown): PatientQueueStore {
   const completed = Array.isArray(raw.completed)
     ? raw.completed.reduce<CompletedConsultationEntry[]>((acc, entry) => {
         if (!entry || typeof entry !== 'object') return acc;
-        const item = entry as Partial<CompletedConsultationEntry>;
+        const item = entry as Partial<CompletedConsultationEntry> & {
+          isEmergency?: unknown;
+        };
         if (
           typeof item.patientId !== 'string' ||
           typeof item.completedAt !== 'string' ||
@@ -103,10 +126,14 @@ function normalizeStore(value: unknown): PatientQueueStore {
 
         const checkedInAt =
           typeof item.checkedInAt === 'string' ? item.checkedInAt : item.completedAt;
+        const wasEmergency =
+          typeof item.wasEmergency === 'boolean' ? item.wasEmergency : Boolean(item.isEmergency);
 
         acc.push({
           patientId: item.patientId,
           tokenNumber,
+          wasEmergency,
+          emergencyReason: normalizeEmergencyReason(item.emergencyReason),
           checkedInAt,
           diagnosisStartedAt:
             typeof item.diagnosisStartedAt === 'string' ? item.diagnosisStartedAt : null,
@@ -186,17 +213,35 @@ export function subscribeToPatientQueue(listener: (store: PatientQueueStore) => 
   };
 }
 
-export function enqueuePatient(patientId: string, doctorId = DEFAULT_DOCTOR_ID): PatientQueueStore {
+export function enqueuePatient(
+  patientId: string,
+  optionsOrDoctorId: EnqueuePatientOptions | string = DEFAULT_DOCTOR_ID
+): PatientQueueStore {
+  const options: EnqueuePatientOptions =
+    typeof optionsOrDoctorId === 'string'
+      ? { doctorId: optionsOrDoctorId }
+      : optionsOrDoctorId;
+
+  const doctorId = options.doctorId ?? DEFAULT_DOCTOR_ID;
+  const requestedEmergency = options.isEmergency;
+  const emergencyReason = normalizeEmergencyReason(options.emergencyReason);
+
   return updateStore((store) => {
     const timestamp = nowIso();
     const existing = store.queue.find((item) => item.patientId === patientId);
     const queueWithoutPatient = store.queue.filter((item) => item.patientId !== patientId);
     const nextTokenNumber = existing ? existing.tokenNumber : store.lastTokenNumber + 1;
+    const isEmergency = requestedEmergency ?? existing?.isEmergency ?? false;
 
     const nextEntry: QueuePatientEntry = {
       patientId,
       status: 'Waiting',
       tokenNumber: nextTokenNumber,
+      isEmergency,
+      emergencyFlaggedAt: isEmergency ? existing?.emergencyFlaggedAt ?? timestamp : null,
+      emergencyReason: isEmergency
+        ? emergencyReason ?? existing?.emergencyReason ?? null
+        : null,
       checkedInAt: timestamp,
       diagnosisStartedAt: null,
       updatedAt: timestamp,
@@ -211,15 +256,77 @@ export function enqueuePatient(patientId: string, doctorId = DEFAULT_DOCTOR_ID):
   });
 }
 
-export function markPatientUnderDiagnosis(patientId: string, doctorId = DEFAULT_DOCTOR_ID): boolean {
+export function flagPatientEmergency(patientId: string, emergencyReason?: string | null): boolean {
   let changed = false;
+  const normalizedReason = normalizeEmergencyReason(emergencyReason);
 
   updateStore((store) => {
     const timestamp = nowIso();
 
     const queue = store.queue.map((item) => {
       if (item.patientId !== patientId) return item;
-      if (item.status === 'UnderDiagnosis') return item;
+
+      const nextReason = normalizedReason ?? item.emergencyReason;
+      if (item.isEmergency && nextReason === item.emergencyReason) {
+        return item;
+      }
+
+      changed = true;
+      return {
+        ...item,
+        isEmergency: true,
+        emergencyFlaggedAt: item.emergencyFlaggedAt ?? timestamp,
+        emergencyReason: nextReason,
+        updatedAt: timestamp,
+      };
+    });
+
+    return changed ? { ...store, queue } : store;
+  });
+
+  return changed;
+}
+
+export function markPatientUnderDiagnosis(patientId: string, doctorId = DEFAULT_DOCTOR_ID): boolean {
+  let changed = false;
+
+  updateStore((store) => {
+    const timestamp = nowIso();
+    const target = store.queue.find((item) => item.patientId === patientId);
+    if (!target) return store;
+    if (target.status === 'UnderDiagnosis') return store;
+
+    const activeConsultation = store.queue.find(
+      (item) => item.status === 'UnderDiagnosis' && item.patientId !== patientId
+    );
+    if (activeConsultation) return store;
+
+    if (target.status === 'Waiting') {
+      if (!target.isEmergency) {
+        const emergencyWaitingCount = store.queue.filter(
+          (item) => item.status === 'Waiting' && item.isEmergency
+        ).length;
+        if (emergencyWaitingCount > 0) return store;
+
+        const nextNonEmergencyByFifo = [...store.queue]
+          .filter((item) => item.status === 'Waiting' && !item.isEmergency)
+          .sort((a, b) => {
+            const aTime = Date.parse(a.checkedInAt);
+            const bTime = Date.parse(b.checkedInAt);
+            if (Number.isNaN(aTime) && Number.isNaN(bTime)) return 0;
+            if (Number.isNaN(aTime)) return 1;
+            if (Number.isNaN(bTime)) return -1;
+            return aTime - bTime;
+          })[0];
+
+        if (nextNonEmergencyByFifo?.patientId !== patientId) {
+          return store;
+        }
+      }
+    }
+
+    const queue = store.queue.map((item) => {
+      if (item.patientId !== patientId) return item;
       changed = true;
       return {
         ...item,
@@ -253,6 +360,8 @@ export function markPatientDiagnosed(patientId: string, doctorId = DEFAULT_DOCTO
         {
           patientId,
           tokenNumber: queueEntry.tokenNumber,
+          wasEmergency: queueEntry.isEmergency,
+          emergencyReason: queueEntry.emergencyReason,
           checkedInAt: queueEntry.checkedInAt,
           diagnosisStartedAt: queueEntry.diagnosisStartedAt,
           completedAt,

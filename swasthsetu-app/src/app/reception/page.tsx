@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { Search, Phone, UserCheck, Clock, ArrowRight, Shield, Users, FileText } from 'lucide-react';
+import { Search, Phone, UserCheck, Clock, ArrowRight, Shield, Users, FileText, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -25,6 +25,8 @@ type ReceptionQueueRow = {
   patient: Patient;
   status: QueueStatus;
   tokenNumber: number;
+  isEmergency: boolean;
+  emergencyReason: string | null;
   checkedInAt: string;
   diagnosisStartedAt: string | null;
   updatedAt: string;
@@ -52,6 +54,8 @@ export default function ReceptionPage() {
   const [searchDone, setSearchDone] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [otpDigits, setOtpDigits] = useState(['', '', '', '']);
+  const [isEmergencyCase, setIsEmergencyCase] = useState(false);
+  const [emergencyReason, setEmergencyReason] = useState('');
   const [foundPatientRecordCount, setFoundPatientRecordCount] = useState(0);
   const [foundPatientFacilityIds, setFoundPatientFacilityIds] = useState<string[]>([]);
   const [consentGranted, setConsentGranted] = useState(false);
@@ -163,6 +167,8 @@ export default function ReceptionPage() {
         patient,
         status: entry.status,
         tokenNumber: entry.tokenNumber,
+        isEmergency: entry.isEmergency,
+        emergencyReason: entry.emergencyReason,
         checkedInAt: entry.checkedInAt,
         diagnosisStartedAt: entry.diagnosisStartedAt,
         updatedAt: entry.updatedAt,
@@ -189,6 +195,8 @@ export default function ReceptionPage() {
     setConsentGranted(false);
     setShowOTP(false);
     setOtpDigits(['', '', '', '']);
+    setIsEmergencyCase(false);
+    setEmergencyReason('');
 
     try {
       const response = await fetch('/api/patients/search', {
@@ -354,8 +362,13 @@ export default function ReceptionPage() {
       setPendingConsents((prev) =>
         prev.filter((entry) => entry.patientId !== foundPatient.id)
       );
-      const nextStore = enqueuePatient(foundPatient.id);
+      const nextStore = enqueuePatient(foundPatient.id, {
+        isEmergency: isEmergencyCase,
+        emergencyReason: emergencyReason.trim() || null,
+      });
       setQueueStore(nextStore);
+      setIsEmergencyCase(false);
+      setEmergencyReason('');
       setActiveStat('In Queue');
       setQueuePriorityMode('long-wait');
       scrollToSection('queue');
@@ -378,6 +391,7 @@ export default function ReceptionPage() {
   const pendingCount = pendingConsents.length;
   const syncedCount = queuedPatients.length;
   const inQueueCount = queuedPatients.filter((q) => q.status === 'Waiting').length;
+  const emergencyQueueCount = queuedPatients.filter((q) => q.isEmergency).length;
   const longWaitCount = queuedPatients.filter(
     (q) => q.status === 'Waiting' && getWaitingMinutes(q.checkedInAt) >= 20
   ).length;
@@ -394,21 +408,23 @@ export default function ReceptionPage() {
     const next = [...filteredQueue];
 
     if (queuePriorityMode === 'elderly') {
-      return next.sort(
-        (a, b) => getAge(b.patient.date_of_birth) - getAge(a.patient.date_of_birth)
-      );
+      return next.sort((a, b) => {
+        if (a.isEmergency !== b.isEmergency) return a.isEmergency ? -1 : 1;
+        return getAge(b.patient.date_of_birth) - getAge(a.patient.date_of_birth);
+      });
     }
 
     if (queuePriorityMode === 'long-wait' || activeStat === 'In Queue') {
-      return next.sort(
-        (a, b) =>
-          new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime()
-      );
+      return next.sort((a, b) => {
+        if (a.isEmergency !== b.isEmergency) return a.isEmergency ? -1 : 1;
+        return new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime();
+      });
     }
 
-    return next.sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    );
+    return next.sort((a, b) => {
+      if (a.isEmergency !== b.isEmergency) return a.isEmergency ? -1 : 1;
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
   })();
 
   const formatToken = (tokenNumber: number) => `T-${String(tokenNumber).padStart(3, '0')}`;
@@ -430,11 +446,22 @@ export default function ReceptionPage() {
   }, [queueStore.completed]);
 
   const smartQueueRows = (() => {
-    const ordered = [...queuedPatients].sort(
-      (a, b) => new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime()
-    );
+    const waitingOrdered = queuedPatients
+      .filter((item) => item.status === 'Waiting')
+      .sort((a, b) => {
+        if (a.isEmergency !== b.isEmergency) return a.isEmergency ? -1 : 1;
+        return new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime();
+      });
 
-    const hasActiveConsultation = ordered.some((item) => item.status === 'UnderDiagnosis');
+    const underDiagnosisOrdered = queuedPatients
+      .filter((item) => item.status === 'UnderDiagnosis')
+      .sort((a, b) => {
+        if (a.isEmergency !== b.isEmergency) return a.isEmergency ? -1 : 1;
+        return new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime();
+      });
+
+    const ordered = [...underDiagnosisOrdered, ...waitingOrdered];
+    const activeConsultationCount = underDiagnosisOrdered.length;
 
     return ordered.map((item, index) => {
       if (item.status === 'UnderDiagnosis') {
@@ -450,7 +477,7 @@ export default function ReceptionPage() {
       const waitingPosition = ordered
         .slice(0, index + 1)
         .filter((entry) => entry.status === 'Waiting').length;
-      const peopleAhead = waitingPosition - 1 + (hasActiveConsultation ? 1 : 0);
+      const peopleAhead = waitingPosition - 1 + activeConsultationCount;
       const etaMinutes = peopleAhead * averageConsultationMinutes;
       const etaLabel =
         etaMinutes <= 0
@@ -470,7 +497,10 @@ export default function ReceptionPage() {
   const callNextPatient = () => {
     const nextWaiting = [...queuedPatients]
       .filter((item) => item.status === 'Waiting')
-      .sort((a, b) => new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime())[0];
+      .sort((a, b) => {
+        if (a.isEmergency !== b.isEmergency) return a.isEmergency ? -1 : 1;
+        return new Date(a.checkedInAt).getTime() - new Date(b.checkedInAt).getTime();
+      })[0];
 
     if (!nextWaiting) {
       toast.info('No waiting patients in queue.');
@@ -481,7 +511,7 @@ export default function ReceptionPage() {
     if (didMove) {
       setQueueStore(getPatientQueueStore());
       toast.success(
-        `Called ${nextWaiting.patient.name} (${formatToken(nextWaiting.tokenNumber)}) to consultation`
+        `Called ${nextWaiting.patient.name} (${formatToken(nextWaiting.tokenNumber)}) to consultation${nextWaiting.isEmergency ? ' · Emergency priority' : ''}`
       );
       return;
     }
@@ -531,7 +561,7 @@ export default function ReceptionPage() {
       icon: Clock,
       color: '#8b5cf6',
       bg: '#f5f3ff',
-      helper: `${longWaitCount} long wait`,
+      helper: `${longWaitCount} long wait · ${emergencyQueueCount} emergency`,
     },
   ];
 
@@ -778,6 +808,11 @@ export default function ReceptionPage() {
             <p style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
               Avg consult: ~{averageConsultationMinutes} min · Waiting: {inQueueCount}
             </p>
+            {emergencyQueueCount > 0 && (
+              <p style={{ fontSize: '11px', color: '#b91c1c', marginTop: '4px', fontWeight: 700 }}>
+                Emergency in queue: {emergencyQueueCount}
+              </p>
+            )}
           </div>
           <button
             onClick={callNextPatient}
@@ -831,9 +866,27 @@ export default function ReceptionPage() {
                     {formatToken(row.tokenNumber)}
                   </span>
                   <div>
-                    <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
-                      {row.patient.name}
-                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+                        {row.patient.name}
+                      </p>
+                      {row.isEmergency && (
+                        <span
+                          style={{
+                            padding: '2px 8px',
+                            borderRadius: '999px',
+                            background: '#fee2e2',
+                            color: '#b91c1c',
+                            fontSize: '10px',
+                            fontWeight: 800,
+                            letterSpacing: '0.03em',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          Emergency
+                        </span>
+                      )}
+                    </div>
                     <p style={{ fontSize: '11px', color: '#64748b' }}>
                       Checked-in{' '}
                       {new Date(row.checkedInAt).toLocaleTimeString('en-IN', {
@@ -1168,7 +1221,7 @@ export default function ReceptionPage() {
                     >
                       <UserCheck size={14} />
                       {foundPatientQueueEntry
-                        ? `Token ${formatToken(foundPatientQueueEntry.tokenNumber)}`
+                        ? `${foundPatientQueueEntry.isEmergency ? 'Emergency · ' : ''}Token ${formatToken(foundPatientQueueEntry.tokenNumber)}`
                         : 'Records Synced'}
                     </div>
                   )}
@@ -1269,6 +1322,70 @@ export default function ReceptionPage() {
                     })}
                   </div>
                 </div>
+
+                {!consentGranted && (
+                  <div
+                    style={{
+                      padding: '14px',
+                      borderRadius: '14px',
+                      background: isEmergencyCase ? '#fef2f2' : '#f8fafc',
+                      border: isEmergencyCase ? '1px solid #fecaca' : '1px solid #e2e8f0',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '10px',
+                        marginBottom: '10px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <AlertTriangle size={16} color={isEmergencyCase ? '#dc2626' : '#64748b'} />
+                        <p
+                          style={{
+                            fontSize: '13px',
+                            fontWeight: 700,
+                            color: isEmergencyCase ? '#7f1d1d' : '#334155',
+                          }}
+                        >
+                          Emergency Case Priority
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setIsEmergencyCase((prev) => !prev)}
+                        style={{
+                          padding: '7px 10px',
+                          borderRadius: '10px',
+                          border: isEmergencyCase ? '1px solid #f87171' : '1px solid #e2e8f0',
+                          background: isEmergencyCase ? '#fee2e2' : '#ffffff',
+                          color: isEmergencyCase ? '#b91c1c' : '#475569',
+                          fontSize: '12px',
+                          fontWeight: 700,
+                        }}
+                      >
+                        {isEmergencyCase ? 'Emergency Enabled' : 'Mark Emergency'}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Optional reason (e.g. chest pain, severe bleeding, trauma)"
+                      value={emergencyReason}
+                      onChange={(event) => setEmergencyReason(event.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        border: '1px solid #e2e8f0',
+                        fontSize: '12px',
+                        color: '#0f172a',
+                        background: '#ffffff',
+                      }}
+                    />
+                  </div>
+                )}
 
                 {/* Action Buttons */}
                 {!consentGranted ? (
@@ -1534,6 +1651,24 @@ export default function ReceptionPage() {
                     >
                       {q.patient.name}
                     </p>
+                    {q.isEmergency && (
+                      <span
+                        style={{
+                          display: 'inline-flex',
+                          marginTop: '3px',
+                          padding: '2px 8px',
+                          borderRadius: '999px',
+                          background: '#fee2e2',
+                          color: '#b91c1c',
+                          fontSize: '10px',
+                          fontWeight: 800,
+                          letterSpacing: '0.03em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Emergency
+                      </span>
+                    )}
                     <p style={{ fontSize: '12px', color: '#475569' }}>
                       {q.patient.gender} ·{' '}
                       {getAge(q.patient.date_of_birth)} yrs

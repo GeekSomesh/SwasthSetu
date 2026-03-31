@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Clock, FileText, Activity, ArrowRight, Stethoscope } from 'lucide-react';
+import { Users, Clock, FileText, Activity, ArrowRight, Stethoscope, AlertTriangle } from 'lucide-react';
 import { getAge, getPatientById, getRecordsByPatientId, patients, type Patient } from '@/data/mock-data';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -23,6 +23,8 @@ type DashboardStatus = QueueStatus | 'Diagnosed' | 'Historical';
 type DashboardPatientRow = {
   patient: Patient;
   status: DashboardStatus;
+  isEmergency?: boolean;
+  emergencyReason?: string | null;
   checkedInAt?: string;
   completedAt?: string;
 };
@@ -86,6 +88,8 @@ export default function DoctorPage() {
     acc.push({
       patient,
       status: entry.status,
+      isEmergency: entry.isEmergency,
+      emergencyReason: entry.emergencyReason,
       checkedInAt: entry.checkedInAt,
     });
     return acc;
@@ -99,6 +103,8 @@ export default function DoctorPage() {
       acc.push({
         patient,
         status: 'Diagnosed',
+        isEmergency: entry.wasEmergency,
+        emergencyReason: entry.emergencyReason,
         completedAt: entry.completedAt,
       });
       return acc;
@@ -106,8 +112,41 @@ export default function DoctorPage() {
 
   const patientsTodayRows = getPatientsTodayRows(queueRows, completedRows);
   const pendingReviewRows = queueRows.filter((row) => row.status === 'Waiting');
+  const emergencyWaitingRows = pendingReviewRows.filter((row) => row.isEmergency);
+  const hasEmergencyWaiting = emergencyWaitingRows.length > 0;
+  const emergencyInQueueCount = queueRows.filter((row) => row.isEmergency).length;
+  const emergencyReasonPreview =
+    emergencyWaitingRows.find((row) => row.emergencyReason)?.emergencyReason ?? null;
+  const activeUnderDiagnosisRow =
+    queueRows.find((row) => row.status === 'UnderDiagnosis') ?? null;
+  const nextNonEmergencyWaitingRow = [...pendingReviewRows]
+    .filter((row) => !row.isEmergency)
+    .sort((a, b) => {
+      const aTime = Date.parse(a.checkedInAt ?? '');
+      const bTime = Date.parse(b.checkedInAt ?? '');
+      if (Number.isNaN(aTime) || Number.isNaN(bTime)) return 0;
+      return aTime - bTime;
+    })[0] ?? null;
   const recordsAccessedRows = queueRows.filter((row) => row.status === 'UnderDiagnosis');
   const consultationsDoneRows = completedRows;
+
+  const handleReviewEmergencyQueue = () => {
+    setActiveStat('Pending Review');
+
+    if (activeUnderDiagnosisRow) {
+      setActionMessage(
+        `Complete current consultation first: ${activeUnderDiagnosisRow.patient.name}.`
+      );
+      return;
+    }
+
+    if (!hasEmergencyWaiting) {
+      setActionMessage('No emergency patient is waiting right now.');
+      return;
+    }
+
+    setActionMessage('Emergency queue is active. Doctor can choose any emergency patient to open.');
+  };
 
   const queueStatusByPatientId = new Map(
     queueRows.map((row) => [row.patient.id, row] as const)
@@ -188,6 +227,19 @@ export default function DoctorPage() {
   const patientList = rowsForDisplay
     .filter((row) => bySearchTerm(row, searchTerm))
     .sort((a, b) => {
+      if (activeStat === 'Pending Review') {
+        if (Boolean(a.isEmergency) !== Boolean(b.isEmergency)) {
+          return a.isEmergency ? -1 : 1;
+        }
+
+        const aCheckInTime = Date.parse(a.checkedInAt ?? '');
+        const bCheckInTime = Date.parse(b.checkedInAt ?? '');
+        if (Number.isNaN(aCheckInTime) && Number.isNaN(bCheckInTime)) return 0;
+        if (Number.isNaN(aCheckInTime)) return 1;
+        if (Number.isNaN(bCheckInTime)) return -1;
+        return aCheckInTime - bCheckInTime;
+      }
+
       const aTime = Date.parse(a.completedAt ?? a.checkedInAt ?? '');
       const bTime = Date.parse(b.completedAt ?? b.checkedInAt ?? '');
       return Number.isNaN(aTime) || Number.isNaN(bTime) ? 0 : bTime - aTime;
@@ -260,6 +312,50 @@ export default function DoctorPage() {
           }}
         >
           {actionMessage}
+        </div>
+      )}
+      {emergencyInQueueCount > 0 && (
+        <div
+          style={{
+            marginBottom: '20px',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '1px solid #fecaca',
+            background: '#fef2f2',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertTriangle size={16} color="#b91c1c" />
+            <div>
+              <p style={{ fontSize: '13px', color: '#7f1d1d', fontWeight: 700 }}>
+                {emergencyInQueueCount} emergency patient(s) in queue.
+              </p>
+              {emergencyReasonPreview && (
+                <p style={{ fontSize: '12px', color: '#991b1b', marginTop: '2px' }}>
+                  Latest reason: {emergencyReasonPreview}
+                </p>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={handleReviewEmergencyQueue}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '10px',
+              border: '1px solid #fca5a5',
+              background: '#fee2e2',
+              color: '#991b1b',
+              fontSize: '12px',
+              fontWeight: 700,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Review Emergency Queue
+          </button>
         </div>
       )}
 
@@ -365,6 +461,32 @@ export default function DoctorPage() {
           ) : (
             patientList.map((row, i) => {
               const records = getRecordsByPatientId(row.patient.id);
+              const isWaiting = row.status === 'Waiting';
+              const isEmergencyWaiting = isWaiting && Boolean(row.isEmergency);
+              const isNextNonEmergencyWaiting =
+                isWaiting &&
+                !row.isEmergency &&
+                nextNonEmergencyWaitingRow?.patient.id === row.patient.id;
+              const isConsultationLocked = Boolean(
+                activeUnderDiagnosisRow && activeUnderDiagnosisRow.patient.id !== row.patient.id
+              );
+              const canOpenWaitingRow = isEmergencyWaiting
+                ? !isConsultationLocked
+                : !hasEmergencyWaiting &&
+                    Boolean(isNextNonEmergencyWaiting) &&
+                    !isConsultationLocked;
+              const canOpenRow = !isWaiting || canOpenWaitingRow;
+              const waitingBlockedLabel = isConsultationLocked
+                ? 'In Queue'
+                : hasEmergencyWaiting && !row.isEmergency
+                  ? 'Emergency First'
+                  : 'In Queue';
+              const actionLabel =
+                row.status === 'Historical'
+                  ? 'Add Rx'
+                  : isWaiting && !canOpenRow
+                    ? waitingBlockedLabel
+                    : 'Open';
               const timelineHref =
                 row.status === 'Historical'
                   ? `/doctor/patient/${row.patient.id}?newVisit=1`
@@ -378,9 +500,49 @@ export default function DoctorPage() {
                 >
                   <Link
                     href={timelineHref}
-                    onClick={() => {
+                    onClick={(event) => {
                       if (row.status === 'Waiting') {
-                        markPatientUnderDiagnosis(row.patient.id);
+                        if (
+                          activeUnderDiagnosisRow &&
+                          activeUnderDiagnosisRow.patient.id !== row.patient.id
+                        ) {
+                          event.preventDefault();
+                          setActionMessage(
+                            `Complete current consultation first: ${activeUnderDiagnosisRow.patient.name}.`
+                          );
+                          return;
+                        }
+
+                        if (!row.isEmergency && hasEmergencyWaiting) {
+                          event.preventDefault();
+                          setActionMessage(
+                            'Emergency patient is waiting. Select any emergency case first.'
+                          );
+                          return;
+                        }
+
+                        if (
+                          !row.isEmergency &&
+                          nextNonEmergencyWaitingRow &&
+                          nextNonEmergencyWaitingRow.patient.id !== row.patient.id
+                        ) {
+                          event.preventDefault();
+                          setActionMessage(
+                            `Queue order active. Next patient: ${nextNonEmergencyWaitingRow.patient.name}.`
+                          );
+                          return;
+                        }
+
+                        const moved = markPatientUnderDiagnosis(row.patient.id);
+                        if (!moved) {
+                          event.preventDefault();
+                          setActionMessage(
+                            'Could not move patient to consultation. Check queue order and active consultation lock.'
+                          );
+                          return;
+                        }
+
+                        setQueueStore(getPatientQueueStore());
                       }
                     }}
                     style={{
@@ -392,12 +554,16 @@ export default function DoctorPage() {
                       alignItems: 'center',
                       transition: 'all 0.2s ease',
                       border: '1px solid transparent',
+                      cursor: canOpenRow ? 'pointer' : 'not-allowed',
+                      opacity: canOpenRow ? 1 : 0.75,
                     }}
                     onMouseEnter={(e) => {
+                      if (!canOpenRow) return;
                       e.currentTarget.style.background = '#f8fafc';
                       e.currentTarget.style.borderColor = '#e2e8f0';
                     }}
                     onMouseLeave={(e) => {
+                      if (!canOpenRow) return;
                       e.currentTarget.style.background = 'transparent';
                       e.currentTarget.style.borderColor = 'transparent';
                     }}
@@ -422,16 +588,46 @@ export default function DoctorPage() {
                         {row.patient.avatar_initials}
                       </div>
                       <div>
-                        <p style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>
-                          {row.patient.name}
-                        </p>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <p style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>
+                            {row.patient.name}
+                          </p>
+                          {row.isEmergency && (
+                            <span
+                              style={{
+                                padding: '2px 8px',
+                                borderRadius: '999px',
+                                background: '#fee2e2',
+                                color: '#b91c1c',
+                                fontSize: '10px',
+                                fontWeight: 800,
+                                letterSpacing: '0.03em',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              Emergency
+                            </span>
+                          )}
+                        </div>
                         <p style={{ fontSize: '12px', color: '#94a3b8' }}>{row.patient.blood_group}</p>
+                        {row.isEmergency && row.emergencyReason && (
+                          <p
+                            style={{
+                              marginTop: '3px',
+                              fontSize: '11px',
+                              color: '#991b1b',
+                              fontWeight: 600,
+                            }}
+                          >
+                            Reason: {row.emergencyReason}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <p style={{ fontSize: '13px', color: '#475569' }}>+91 {row.patient.mobile_number}</p>
                     <p style={{ fontSize: '13px', color: '#475569' }}>{getAge(row.patient.date_of_birth)} yrs</p>
                     <p style={{ fontSize: '13px', color: '#475569' }}>{row.patient.gender}</p>
-                    <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                       <span
                         style={{
                           padding: '4px 10px',
@@ -444,6 +640,20 @@ export default function DoctorPage() {
                       >
                         {statusStyles[row.status].label}
                       </span>
+                      {row.isEmergency && row.status !== 'Diagnosed' && (
+                        <span
+                          style={{
+                            padding: '4px 10px',
+                            borderRadius: '8px',
+                            background: '#fee2e2',
+                            color: '#b91c1c',
+                            fontSize: '12px',
+                            fontWeight: 700,
+                          }}
+                        >
+                          Emergency
+                        </span>
+                      )}
                     </div>
                     <div>
                       <span
@@ -474,7 +684,7 @@ export default function DoctorPage() {
                           color: '#0f766e',
                         }}
                       >
-                        {row.status === 'Historical' ? 'Add Rx' : 'Open'}
+                        {actionLabel}
                       </span>
                       <ArrowRight size={16} color="#94a3b8" />
                     </div>
