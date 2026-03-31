@@ -1,11 +1,18 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { Toaster } from "sonner";
+import type { Metadata } from 'next';
+import { Nunito_Sans } from 'next/font/google';
+import './globals.css';
+import { Toaster } from 'sonner';
+
+const nunitoSans = Nunito_Sans({
+  subsets: ['latin'],
+  variable: '--font-nunito',
+  weight: ['400', '500', '600', '700', '800'],
+});
 
 export const metadata: Metadata = {
-  title: "SwasthSetu AI — Care Continuity Platform",
+  title: 'SwasthSetu AI - Care Continuity Platform',
   description:
-    "A centralized rural healthcare platform enabling doctors to access patient medical history across hospitals with consented record retrieval.",
+    'A centralized rural healthcare platform enabling doctors to access patient medical history across hospitals with consented record retrieval.',
 };
 
 export default function RootLayout({
@@ -15,22 +22,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body
-        style={{
-          fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <body suppressHydrationWarning className={`${nunitoSans.variable} app-root`}>
         {children}
         <Toaster
           position="bottom-right"
           toastOptions={{
             style: {
-              borderRadius: "12px",
-              fontSize: "14px",
-              fontFamily: "Inter, system-ui, sans-serif",
+              borderRadius: '14px',
+              fontSize: '14px',
+              fontFamily: 'var(--font-nunito), "Segoe UI", sans-serif',
             },
           }}
         />
@@ -38,4 +38,3 @@ export default function RootLayout({
     </html>
   );
 }
-

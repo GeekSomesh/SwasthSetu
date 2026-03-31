@@ -15,22 +15,17 @@ export default function DoctorLayout({
   }, []);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="app-shell">
       <Sidebar role="doctor" />
-      <div
-        style={{
-          flex: 1,
-          marginLeft: 'var(--app-sidebar-width, 260px)',
-          transition: 'margin-left 0.3s ease',
-        }}
-      >
+      <div className="app-shell__content">
         <TopNav
           title="Doctor Dashboard"
           subtitle="Patient records & clinical view"
           deskLabel="Doctor Desk"
-          onNotificationClick={() => alert('No new doctor notifications at the moment.')}
         />
-        <main style={{ padding: '24px 32px' }}>{children}</main>
+        <main className="app-shell__main">
+          <div className="app-shell__main-inner">{children}</div>
+        </main>
       </div>
     </div>
   );

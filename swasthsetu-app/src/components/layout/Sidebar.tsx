@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -9,7 +9,6 @@ import {
   Stethoscope,
   ChevronLeft,
   ChevronRight,
-  Heart,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { type UserRole } from '@/lib/auth';
@@ -35,8 +34,8 @@ interface SidebarProps {
   role: UserRole;
 }
 
-const SIDEBAR_EXPANDED_WIDTH = 260;
-const SIDEBAR_COLLAPSED_WIDTH = 72;
+const SIDEBAR_EXPANDED_WIDTH = 238;
+const SIDEBAR_COLLAPSED_WIDTH = 76;
 
 export default function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
@@ -54,67 +53,68 @@ export default function Sidebar({ role }: SidebarProps) {
       style={{
         width: `${sidebarWidth}px`,
         minHeight: '100vh',
-        background: 'linear-gradient(180deg, #134e4a 0%, #0f766e 50%, #115e59 100%)',
-        display: 'flex',
-        flexDirection: 'column',
-        transition: 'width 0.3s ease',
         position: 'fixed',
         left: 0,
         top: 0,
-        zIndex: 50,
-        boxShadow: '4px 0 24px rgba(0,0,0,0.1)',
+        zIndex: 60,
+        transition: 'width 0.26s ease',
+        background: '#050505',
+        borderRight: '1px solid rgba(255,255,255,0.08)',
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
-      {/* Logo Area */}
+      <button suppressHydrationWarning
+        onClick={() => setCollapsed((prev) => !prev)}
+        style={{
+          position: 'absolute',
+          right: '-11px',
+          top: '24px',
+          width: '22px',
+          height: '22px',
+          borderRadius: '999px',
+          border: '1px solid #d8d1cb',
+          background: '#f4efea',
+          color: '#5f554d',
+          display: 'grid',
+          placeItems: 'center',
+          padding: 0,
+          zIndex: 4,
+        }}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
+      </button>
+
       <div
         style={{
-          padding: collapsed ? '24px 12px' : '24px 24px',
-          borderBottom: '1px solid rgba(255,255,255,0.1)',
+          padding: collapsed ? '20px 8px 16px' : '18px 16px 16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px',
           justifyContent: collapsed ? 'center' : 'flex-start',
+          gap: '8px',
         }}
       >
         <div
           style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '12px',
-            background: 'rgba(255,255,255,0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
+            width: '18px',
+            height: '18px',
+            borderRadius: '999px',
+            border: '3px solid #f1662a',
+            boxShadow: 'inset 0 0 0 2px #050505',
           }}
-        >
-          <Heart size={22} color="#5eead4" fill="#5eead4" />
-        </div>
+        />
         {!collapsed && (
-          <div>
-            <h1
-              style={{
-                fontSize: '18px',
-                fontWeight: 700,
-                color: '#ffffff',
-                letterSpacing: '-0.02em',
-                lineHeight: 1.2,
-              }}
-            >
-              SwasthSetu
-            </h1>
-            <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '2px' }}>
-              Care Continuity Platform
-            </p>
-          </div>
+          <h1 style={{ color: '#ffffff', fontSize: '25px', fontWeight: 700, lineHeight: 1 }}>
+            SwasthSetu
+          </h1>
         )}
       </div>
 
-      {/* Navigation */}
-      <nav style={{ padding: '16px 12px', flex: 1 }}>
-        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <nav style={{ padding: collapsed ? '12px 8px 0' : '16px 12px 0', flex: 1 }}>
+        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {navItems.map((item) => {
-            const isActive = pathname.startsWith(item.href) && item.href !== '#';
+            const isActive = pathname.startsWith(item.href);
             const Icon = item.icon;
             return (
               <li key={item.label}>
@@ -123,25 +123,27 @@ export default function Sidebar({ role }: SidebarProps) {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px',
-                    padding: collapsed ? '12px' : '12px 16px',
-                    borderRadius: '10px',
-                    textDecoration: 'none',
-                    color: isActive ? '#ffffff' : 'rgba(255,255,255,0.6)',
-                    background: isActive ? 'rgba(255,255,255,0.15)' : 'transparent',
-                    fontSize: '14px',
-                    fontWeight: isActive ? 600 : 400,
-                    transition: 'all 0.2s ease',
                     justifyContent: collapsed ? 'center' : 'flex-start',
+                    gap: '11px',
+                    minHeight: '44px',
+                    borderRadius: '999px',
+                    padding: collapsed ? '0' : '0 14px',
+                    textDecoration: 'none',
+                    fontSize: '15px',
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? '#f1662a' : '#d3cec8',
+                    background: isActive ? '#f4efea' : 'transparent',
                   }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                  onMouseEnter={(event) => {
+                    if (isActive) return;
+                    event.currentTarget.style.background = 'rgba(255,255,255,0.08)';
                   }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.background = 'transparent';
+                  onMouseLeave={(event) => {
+                    if (isActive) return;
+                    event.currentTarget.style.background = 'transparent';
                   }}
                 >
-                  <Icon size={20} />
+                  <Icon size={16} />
                   {!collapsed && <span>{item.label}</span>}
                 </Link>
               </li>
@@ -149,34 +151,7 @@ export default function Sidebar({ role }: SidebarProps) {
           })}
         </ul>
       </nav>
-
-      {/* Collapse Toggle */}
-      <div
-        style={{
-          padding: '16px',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
-        }}
-      >
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.15)',
-            background: 'rgba(255,255,255,0.05)',
-            color: 'rgba(255,255,255,0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            fontSize: '13px',
-          }}
-        >
-          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-          {!collapsed && 'Collapse'}
-        </button>
-      </div>
     </aside>
   );
 }
+

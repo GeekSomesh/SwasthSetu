@@ -22,328 +22,553 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #f0fdfa 0%, #f8fafc 30%, #e0e7ff 100%)',
-        padding: '24px',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Background decorative elements */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-120px',
-          right: '-120px',
-          width: '400px',
-          height: '400px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(15,118,110,0.08) 0%, transparent 70%)',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '-80px',
-          left: '-80px',
-          width: '300px',
-          height: '300px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)',
-        }}
-      />
-
+    <div className="login-page">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        className="login-shell"
         style={{
-          width: '100%',
-          maxWidth: '480px',
-          background: '#ffffff',
-          borderRadius: '24px',
-          padding: '48px 40px',
-          boxShadow:
-            '0 25px 50px -12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.03)',
-          position: 'relative',
-          zIndex: 1,
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
         }}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
       >
-        {/* Logo & Branding */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '20px',
-              background: 'linear-gradient(135deg, #0f766e, #14b8a6)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 16px',
-              boxShadow: '0 8px 24px rgba(15,118,110,0.3)',
-            }}
-          >
-            <Heart size={32} color="#ffffff" fill="#ffffff" />
+        <section className="hero-panel">
+          <div className="hero-badge">
+            <Heart size={18} color="#fff7f2" fill="#fff7f2" />
+            <span>SwasthSetu Platform</span>
           </div>
-          <h1
-            style={{
-              fontSize: '28px',
-              fontWeight: 800,
-              color: '#0f172a',
-              letterSpacing: '-0.03em',
-            }}
-          >
-            SwasthSetu
-          </h1>
-          <p
-            style={{
-              fontSize: '14px',
-              color: '#475569',
-              marginTop: '8px',
-              lineHeight: 1.5,
-            }}
-          >
-            Care Continuity Platform for Rural India
+
+          <h1>Clinical workflow console for reception and doctors.</h1>
+          <p>
+            Manage patient check-ins, queue routing, consultation notes, and continuity records from one
+            focused dashboard.
           </p>
-        </div>
 
-        {/* Hospital Code Input */}
-        <div style={{ marginBottom: '24px' }}>
-          <label
-            style={{
-              display: 'block',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#475569',
-              marginBottom: '8px',
-            }}
-          >
-            Hospital / Facility Code
-          </label>
-          <input
-            type="text"
-            placeholder="e.g. CCH-INDORE-001"
-            value={hospitalCode}
-            onChange={(e) => setHospitalCode(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '14px 16px',
-              borderRadius: '12px',
-              border: '1.5px solid #e2e8f0',
-              fontSize: '14px',
-              color: '#0f172a',
-              background: '#f8fafc',
-              transition: 'border-color 0.2s ease',
-            }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = '#0f766e')}
-            onBlur={(e) => (e.currentTarget.style.borderColor = '#e2e8f0')}
-          />
-        </div>
-
-        {/* Role Selection */}
-        <div style={{ marginBottom: '32px' }}>
-          <label
-            style={{
-              display: 'block',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: '#475569',
-              marginBottom: '12px',
-            }}
-          >
-            Select Your Role
-          </label>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            {/* Reception Card */}
-            <button
-              onClick={() => setSelectedRole('reception')}
-              style={{
-                flex: 1,
-                padding: '20px 16px',
-                borderRadius: '16px',
-                border: `2px solid ${
-                  selectedRole === 'reception' ? '#0f766e' : '#e2e8f0'
-                }`,
-                background:
-                  selectedRole === 'reception' ? '#f0fdfa' : '#ffffff',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '10px',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '14px',
-                  background:
-                    selectedRole === 'reception'
-                      ? 'linear-gradient(135deg, #0f766e, #14b8a6)'
-                      : '#f1f5f9',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <ClipboardList
-                  size={22}
-                  color={selectedRole === 'reception' ? '#fff' : '#475569'}
-                />
+          <div className="hero-grid">
+            <div className="hero-tile">
+              <div className="hero-icon">
+                <ClipboardList size={18} />
               </div>
-              <span
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color:
-                    selectedRole === 'reception' ? '#0f766e' : '#475569',
-                }}
-              >
-                Reception
-              </span>
-              <span
-                style={{
-                  fontSize: '11px',
-                  color: '#94a3b8',
-                  textAlign: 'center',
-                }}
-              >
-                Patient check-in & consent
-              </span>
-            </button>
-
-            {/* Doctor Card */}
-            <button
-              onClick={() => setSelectedRole('doctor')}
-              style={{
-                flex: 1,
-                padding: '20px 16px',
-                borderRadius: '16px',
-                border: `2px solid ${
-                  selectedRole === 'doctor' ? '#0f766e' : '#e2e8f0'
-                }`,
-                background:
-                  selectedRole === 'doctor' ? '#f0fdfa' : '#ffffff',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '10px',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <div
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '14px',
-                  background:
-                    selectedRole === 'doctor'
-                      ? 'linear-gradient(135deg, #0f766e, #14b8a6)'
-                      : '#f1f5f9',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                <Stethoscope
-                  size={22}
-                  color={selectedRole === 'doctor' ? '#fff' : '#475569'}
-                />
+              <div>
+                <h3>Reception Flow</h3>
+                <p>OTP lookup, consent, queue, and emergency triage.</p>
               </div>
-              <span
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color:
-                    selectedRole === 'doctor' ? '#0f766e' : '#475569',
-                }}
-              >
-                Doctor
-              </span>
-              <span
-                style={{
-                  fontSize: '11px',
-                  color: '#94a3b8',
-                  textAlign: 'center',
-                }}
-              >
-                View records & prescribe
-              </span>
-            </button>
+            </div>
+
+            <div className="hero-tile">
+              <div className="hero-icon">
+                <Stethoscope size={18} />
+              </div>
+              <div>
+                <h3>Doctor Flow</h3>
+                <p>Pending review, timeline access, and structured prescriptions.</p>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
-        {/* Login Button */}
-        <button
-          onClick={handleLogin}
-          disabled={!selectedRole || isLoading}
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '14px',
-            border: 'none',
-            background:
-              selectedRole
-                ? 'linear-gradient(135deg, #0f766e, #0d6560)'
-                : '#e2e8f0',
-            color: selectedRole ? '#ffffff' : '#94a3b8',
-            fontSize: '15px',
-            fontWeight: 600,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            cursor: selectedRole ? 'pointer' : 'not-allowed',
-            transition: 'all 0.2s ease',
-            boxShadow: selectedRole
-              ? '0 4px 14px rgba(15,118,110,0.3)'
-              : 'none',
-          }}
-        >
-          {isLoading ? (
-            <div
-              style={{
-                width: '20px',
-                height: '20px',
-                border: '2px solid rgba(255,255,255,0.3)',
-                borderTopColor: '#fff',
-                borderRadius: '50%',
-                animation: 'spin 0.6s linear infinite',
-              }}
-            />
-          ) : (
-            <>
-              Enter Dashboard
-              <ArrowRight size={18} />
-            </>
-          )}
-        </button>
+        <section className="auth-panel">
+          <div className="auth-card">
+            <div className="auth-head">
+              <div className="auth-logo">
+                <Heart size={22} color="#fff7f2" fill="#fff7f2" />
+              </div>
+              <div>
+                <h2>Sign in to workspace</h2>
+                <p>Choose your desk role and continue</p>
+              </div>
+            </div>
 
-        {/* Footer */}
-        <p
-          style={{
-            textAlign: 'center',
-            fontSize: '12px',
-            color: '#94a3b8',
-            marginTop: '24px',
-          }}
-        >
-          Powered by ABDM · Made for Rural India 🇮🇳
-        </p>
+            <div className="field">
+              <label>Hospital / Facility Code</label>
+              <input
+                suppressHydrationWarning
+                type="text"
+                placeholder="e.g. CCH-INDORE-001"
+                value={hospitalCode}
+                onChange={(e) => setHospitalCode(e.target.value)}
+              />
+            </div>
+
+            <div className="field">
+              <label>Select role</label>
+              <div className="role-grid">
+                <button
+                  suppressHydrationWarning
+                  onClick={() => setSelectedRole('reception')}
+                  className={`role-btn ${selectedRole === 'reception' ? 'is-active' : ''}`}
+                >
+                  <span className="role-icon">
+                    <ClipboardList size={20} />
+                  </span>
+                  <strong>Reception</strong>
+                  <small>Check-in and consent</small>
+                </button>
+
+                <button
+                  suppressHydrationWarning
+                  onClick={() => setSelectedRole('doctor')}
+                  className={`role-btn ${selectedRole === 'doctor' ? 'is-active' : ''}`}
+                >
+                  <span className="role-icon">
+                    <Stethoscope size={20} />
+                  </span>
+                  <strong>Doctor</strong>
+                  <small>Review and prescribe</small>
+                </button>
+              </div>
+            </div>
+
+            <button
+              suppressHydrationWarning
+              onClick={handleLogin}
+              disabled={!selectedRole || isLoading}
+              className="submit-btn"
+            >
+              {isLoading ? (
+                <>
+                  <span className="loader" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <>
+                  <span>Continue to Dashboard</span>
+                  <span className="submit-icon-wrap">
+                    <ArrowRight size={16} />
+                  </span>
+                </>
+              )}
+            </button>
+
+            <p className="auth-foot">Powered by ABDM - Built for rural care delivery</p>
+          </div>
+        </section>
       </motion.div>
+
+      <style jsx>{`
+        .login-page {
+          min-height: 100vh;
+          background: #f8f5f1;
+          display: flex;
+          align-items: stretch;
+          justify-content: stretch;
+          overflow: auto;
+        }
+
+        .login-shell {
+          width: 100%;
+          min-height: 100vh;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+
+        .hero-panel {
+          background:
+            radial-gradient(circle at 12% 14%, rgba(241, 102, 42, 0.18), transparent 34%),
+            radial-gradient(circle at 78% 72%, rgba(241, 102, 42, 0.14), transparent 38%),
+            linear-gradient(155deg, #171310 0%, #211913 55%, #2b1d13 100%);
+          color: #fff7f2;
+          padding: 50px 52px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          min-width: 0;
+        }
+
+        .hero-badge {
+          width: fit-content;
+          display: inline-flex;
+          align-items: center;
+          gap: 9px;
+          padding: 10px 16px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.07);
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .hero-panel h1 {
+          margin-top: 30px;
+          font-size: clamp(52px, 4.9vw, 72px);
+          line-height: 1.04;
+          letter-spacing: -0.035em;
+          max-width: 640px;
+        }
+
+        .hero-panel p {
+          margin-top: 16px;
+          font-size: 17px;
+          line-height: 1.58;
+          color: rgba(255, 247, 242, 0.88);
+          max-width: 620px;
+        }
+
+        .hero-grid {
+          margin-top: 38px;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+          max-width: 720px;
+        }
+
+        .hero-tile {
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          background: rgba(255, 255, 255, 0.07);
+          padding: 16px 18px;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          backdrop-filter: blur(2px);
+        }
+
+        .hero-icon {
+          width: 38px;
+          height: 38px;
+          border-radius: 11px;
+          border: 1px solid rgba(255, 255, 255, 0.26);
+          background: rgba(255, 255, 255, 0.12);
+          display: grid;
+          place-items: center;
+          color: #fff7f2;
+        }
+
+        .hero-tile h3 {
+          font-size: 17px;
+          margin-bottom: 4px;
+        }
+
+        .hero-tile p {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.45;
+          color: rgba(255, 247, 242, 0.8);
+        }
+
+        .auth-panel {
+          padding: 36px 34px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #f8f5f1;
+          min-width: 0;
+        }
+
+        .auth-card {
+          width: 100%;
+          max-width: 520px;
+          background: #fbf7f3;
+          border: 1px solid #d8cec5;
+          border-radius: 30px;
+          padding: 30px 28px 26px;
+          box-shadow: 0 28px 46px -36px rgba(53, 39, 24, 0.64);
+        }
+
+        .auth-head {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 24px;
+        }
+
+        .auth-logo {
+          width: 54px;
+          height: 54px;
+          border-radius: 16px;
+          background: linear-gradient(145deg, #f1662a, #dc5c24);
+          display: grid;
+          place-items: center;
+          flex-shrink: 0;
+        }
+
+        .auth-head h2 {
+          color: #1e1915;
+          font-size: 26px;
+          line-height: 1.1;
+          margin: 0;
+          letter-spacing: -0.02em;
+          font-family: var(--font-nunito), 'Segoe UI', sans-serif;
+          font-weight: 700;
+        }
+
+        .auth-head p {
+          margin: 4px 0 0;
+          font-size: 13px;
+          color: #6f635b;
+          font-weight: 400;
+        }
+
+        .field {
+          margin-bottom: 18px;
+        }
+
+        .field label {
+          display: block;
+          font-size: 14px;
+          font-weight: 700;
+          color: #6f635b;
+          margin-bottom: 10px;
+        }
+
+        .field input {
+          width: 100%;
+          border-radius: 14px;
+          border: 1.5px solid #d7cdc5;
+          background: #f5efea;
+          color: #1e1915;
+          font-size: 16px;
+          padding: 14px 16px;
+          outline: none;
+        }
+
+        .field input:focus {
+          border-color: #f1662a;
+        }
+
+        .role-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+
+        .role-btn {
+          border: 1.5px solid #d7cdc5;
+          background: #f7f2ee;
+          border-radius: 16px;
+          padding: 16px 12px;
+          min-height: 136px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          color: #6f635b;
+        }
+
+        .role-btn.is-active {
+          border-color: #f1662a;
+          background: #fff1e8;
+          color: #f1662a;
+        }
+
+        .role-icon {
+          width: 42px;
+          height: 42px;
+          border-radius: 12px;
+          display: grid;
+          place-items: center;
+          background: #eee7df;
+        }
+
+        .role-btn.is-active .role-icon {
+          background: linear-gradient(145deg, #f1662a, #dc5c24);
+          color: #fff7f2;
+        }
+
+        .role-btn strong {
+          font-size: 16px;
+          line-height: 1;
+        }
+
+        .role-btn small {
+          font-size: 12px;
+          color: #9c8f84;
+          text-align: center;
+        }
+
+        .submit-btn {
+          margin-top: 8px;
+          width: 100%;
+          padding: 15px 16px;
+          border-radius: 14px;
+          border: 1px solid #cf551f;
+          background: linear-gradient(145deg, #f1662a, #d95a22);
+          color: #fff9f5;
+          font-size: 16px;
+          font-weight: 700;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          box-shadow:
+            0 14px 26px -18px rgba(220, 92, 36, 0.86),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+          transform: translateY(-1px);
+          filter: brightness(1.02);
+        }
+
+        .submit-btn:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+          border-color: #d7cdc5;
+          background: #d9d2cb;
+          color: #8f8378;
+          box-shadow: none;
+        }
+
+        .loader {
+          width: 20px;
+          height: 20px;
+          border: 2px solid rgba(255, 247, 242, 0.35);
+          border-top-color: #fff7f2;
+          border-radius: 50%;
+          animation: spin 0.6s linear infinite;
+        }
+
+        .submit-icon-wrap {
+          width: 24px;
+          height: 24px;
+          border-radius: 999px;
+          border: 1px solid rgba(255, 255, 255, 0.36);
+          background: rgba(255, 255, 255, 0.12);
+          display: grid;
+          place-items: center;
+        }
+
+        .auth-foot {
+          margin-top: 16px;
+          text-align: center;
+          font-size: 13px;
+          color: #9c8f84;
+        }
+
+        @media (max-width: 1220px) {
+          .hero-panel h1 {
+            font-size: clamp(42px, 4.6vw, 58px);
+          }
+
+          .hero-grid {
+            gap: 10px;
+          }
+
+          .auth-panel {
+            padding: 24px 20px;
+          }
+
+          .auth-card {
+            padding: 24px;
+          }
+
+          .auth-head h2 {
+            font-size: 24px;
+          }
+
+          .auth-head p {
+            font-size: 13px;
+          }
+
+          .field label {
+            font-size: 14px;
+          }
+
+          .field input {
+            font-size: 16px;
+          }
+        }
+
+        @media (max-width: 980px) {
+          .login-page {
+            min-height: 100vh;
+            overflow: auto;
+          }
+
+          .login-shell {
+            min-height: 100vh;
+          }
+
+          .hero-panel {
+            padding: 32px 28px;
+          }
+
+          .hero-panel h1 {
+            font-size: clamp(36px, 4.2vw, 46px);
+          }
+
+          .hero-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .auth-panel {
+            padding: 20px 14px;
+          }
+
+          .auth-card {
+            max-width: 460px;
+            padding: 18px;
+          }
+
+          .auth-head h2 {
+            font-size: 23px;
+          }
+
+          .auth-head p {
+            font-size: 12px;
+          }
+
+          .field label {
+            font-size: 13px;
+          }
+
+          .field input {
+            font-size: 15px;
+          }
+        }
+
+        @media (max-width: 760px) {
+          .login-shell {
+            min-height: auto;
+          }
+
+          .hero-panel {
+            padding: 26px 22px;
+          }
+
+          .hero-panel h1 {
+            font-size: 38px;
+          }
+
+          .auth-panel {
+            padding: 20px 14px 28px;
+          }
+
+          .auth-card {
+            max-width: 100%;
+            padding: 20px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .hero-panel h1 {
+            font-size: 32px;
+          }
+
+          .auth-panel {
+            padding: 12px 10px 20px;
+          }
+
+          .auth-card {
+            padding: 16px;
+            border-radius: 20px;
+          }
+
+          .role-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
 
       <style jsx global>{`
         @keyframes spin {
-          to { transform: rotate(360deg); }
+          to {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
     </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Search, Phone, UserCheck, Clock, ArrowRight, Shield, Users, FileText, AlertTriangle } from 'lucide-react';
@@ -44,6 +44,13 @@ type PendingConsentEntry = {
 type QueuePriorityMode = 'default' | 'long-wait' | 'elderly';
 
 const PENDING_CONSENT_STORAGE_KEY = 'swasthsetu-pending-consents-v2';
+const THEME_AVATAR_BG = 'linear-gradient(145deg, #f1662a, #e7672f)';
+const THEME_PRIMARY_BUTTON_BG = '#f1662a';
+const THEME_PRIMARY_BUTTON_BORDER = '#dc5c24';
+const THEME_PRIMARY_BUTTON_SHADOW = '0 12px 24px -16px rgba(220, 92, 36, 0.8)';
+const THEME_ICON_ACCENT = '#f1662a';
+const THEME_ICON_MUTED = '#9c8f84';
+const THEME_ICON_CHIP_BG = '#fff1e8';
 
 export default function ReceptionPage() {
   const lookupSectionRef = useRef<HTMLDivElement | null>(null);
@@ -511,7 +518,7 @@ export default function ReceptionPage() {
     if (didMove) {
       setQueueStore(getPatientQueueStore());
       toast.success(
-        `Called ${nextWaiting.patient.name} (${formatToken(nextWaiting.tokenNumber)}) to consultation${nextWaiting.isEmergency ? ' · Emergency priority' : ''}`
+        `Called ${nextWaiting.patient.name} (${formatToken(nextWaiting.tokenNumber)}) to consultation${nextWaiting.isEmergency ? ' - Emergency priority' : ''}`
       );
       return;
     }
@@ -535,33 +542,33 @@ export default function ReceptionPage() {
       label: 'Patients Today',
       value: String(patientsTodayCount),
       icon: Users,
-      color: '#0f766e',
-      bg: '#f0fdfa',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       helper: `${completedTodayCount} diagnosed`,
     },
     {
       label: 'Consents Pending',
       value: String(pendingCount),
       icon: Shield,
-      color: '#f59e0b',
-      bg: '#fffbeb',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       helper: pendingCount > 0 ? 'Needs follow-up' : 'All clear',
     },
     {
       label: 'Records Synced',
       value: String(syncedCount),
       icon: FileText,
-      color: '#3b82f6',
-      bg: '#eff6ff',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       helper: syncedCount > 0 ? 'Doctor-ready' : 'No active cases',
     },
     {
       label: 'In Queue',
       value: String(inQueueCount),
       icon: Clock,
-      color: '#8b5cf6',
-      bg: '#f5f3ff',
-      helper: `${longWaitCount} long wait · ${emergencyQueueCount} emergency`,
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
+      helper: `${longWaitCount} long wait - ${emergencyQueueCount} emergency`,
     },
   ];
 
@@ -673,8 +680,8 @@ export default function ReceptionPage() {
     },
     UnderDiagnosis: {
       label: 'Under Diagnosis',
-      bg: '#eff6ff',
-      color: '#1d4ed8',
+      bg: '#eef4f8',
+      color: '#4e82bb',
     },
   };
 
@@ -690,14 +697,14 @@ export default function ReceptionPage() {
         }}
       >
         {stats.map((stat) => (
-          <button
+          <button suppressHydrationWarning
             key={stat.label}
             onClick={() => handleStatClick(stat.label as ReceptionStat)}
             style={{
-              background: activeStat === stat.label ? '#e0f7fa' : '#ffffff',
+              background: activeStat === stat.label ? '#f8f1ea' : '#f7f2ee',
               borderRadius: '16px',
               padding: '20px 24px',
-              border: activeStat === stat.label ? '2px solid #14b8a6' : '1px solid #e2e8f0',
+              border: activeStat === stat.label ? '2px solid #ff7b41' : '1px solid #d7cdc5',
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
@@ -724,16 +731,16 @@ export default function ReceptionPage() {
                 style={{
                   fontSize: '24px',
                   fontWeight: 700,
-                  color: '#0f172a',
+                  color: '#1e1915',
                   lineHeight: 1,
                 }}
               >
                 {stat.value}
               </p>
-              <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>
+              <p style={{ fontSize: '13px', color: '#6f635b', marginTop: '4px' }}>
                 {stat.label}
               </p>
-              <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
+              <p style={{ fontSize: '11px', color: '#9c8f84', marginTop: '2px' }}>
                 {stat.helper}
               </p>
             </div>
@@ -743,10 +750,10 @@ export default function ReceptionPage() {
 
       <div
         style={{
-          background: '#ffffff',
+          background: '#f7f2ee',
           borderRadius: '16px',
           padding: '16px 18px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid #d7cdc5',
           boxShadow: 'var(--shadow-sm)',
           marginBottom: '20px',
           display: 'flex',
@@ -756,21 +763,21 @@ export default function ReceptionPage() {
         }}
       >
         <div>
-          <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+          <p style={{ fontSize: '13px', fontWeight: 700, color: '#1e1915' }}>
             {statPlaybook.title}
           </p>
-          <p style={{ fontSize: '12px', color: '#475569', marginTop: '3px' }}>
+          <p style={{ fontSize: '12px', color: '#6f635b', marginTop: '3px' }}>
             {statPlaybook.description}
           </p>
         </div>
-        <button
+        <button suppressHydrationWarning
           onClick={statPlaybook.onAction}
           style={{
             padding: '10px 14px',
             borderRadius: '10px',
-            border: '1px solid #99f6e4',
-            background: '#f0fdfa',
-            color: '#0f766e',
+            border: '1px solid #ffe7da',
+            background: '#f8f1ea',
+            color: '#f1662a',
             fontSize: '12px',
             fontWeight: 700,
             whiteSpace: 'nowrap',
@@ -782,9 +789,9 @@ export default function ReceptionPage() {
 
       <div
         style={{
-          background: '#ffffff',
+          background: '#f7f2ee',
           borderRadius: '18px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid #d7cdc5',
           boxShadow: 'var(--shadow-sm)',
           marginBottom: '22px',
           overflow: 'hidden',
@@ -793,7 +800,7 @@ export default function ReceptionPage() {
         <div
           style={{
             padding: '14px 18px',
-            borderBottom: '1px solid #e2e8f0',
+            borderBottom: '1px solid #d7cdc5',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -802,11 +809,11 @@ export default function ReceptionPage() {
           }}
         >
           <div>
-            <p style={{ fontSize: '14px', fontWeight: 700, color: '#0f172a' }}>
-              Smart Queue · Token ETA Board
+            <p style={{ fontSize: '14px', fontWeight: 700, color: '#1e1915' }}>
+              Smart Queue - Token ETA Board
             </p>
-            <p style={{ fontSize: '12px', color: '#64748b', marginTop: '2px' }}>
-              Avg consult: ~{averageConsultationMinutes} min · Waiting: {inQueueCount}
+            <p style={{ fontSize: '12px', color: '#8f8279', marginTop: '2px' }}>
+              Avg consult: ~{averageConsultationMinutes} min - Waiting: {inQueueCount}
             </p>
             {emergencyQueueCount > 0 && (
               <p style={{ fontSize: '11px', color: '#b91c1c', marginTop: '4px', fontWeight: 700 }}>
@@ -814,14 +821,14 @@ export default function ReceptionPage() {
               </p>
             )}
           </div>
-          <button
+          <button suppressHydrationWarning
             onClick={callNextPatient}
             style={{
               padding: '9px 14px',
               borderRadius: '10px',
-              border: '1px solid #99f6e4',
-              background: '#f0fdfa',
-              color: '#0f766e',
+              border: '1px solid #ffe7da',
+              background: '#f8f1ea',
+              color: '#f1662a',
               fontSize: '12px',
               fontWeight: 700,
             }}
@@ -831,7 +838,7 @@ export default function ReceptionPage() {
         </div>
         <div style={{ padding: '10px 12px' }}>
           {smartQueueRows.length === 0 ? (
-            <p style={{ fontSize: '12px', color: '#64748b', padding: '8px' }}>
+            <p style={{ fontSize: '12px', color: '#8f8279', padding: '8px' }}>
               No active tokens. Verify OTP for a patient to generate token and ETA.
             </p>
           ) : (
@@ -845,8 +852,8 @@ export default function ReceptionPage() {
                     gap: '12px',
                     alignItems: 'center',
                     borderRadius: '10px',
-                    border: '1px solid #f1f5f9',
-                    background: '#f8fafc',
+                    border: '1px solid #eee7df',
+                    background: '#f5efea',
                     padding: '10px 12px',
                   }}
                 >
@@ -857,8 +864,8 @@ export default function ReceptionPage() {
                       alignItems: 'center',
                       padding: '6px 10px',
                       borderRadius: '999px',
-                      background: '#ccfbf1',
-                      color: '#134e4a',
+                      background: '#fff1e8',
+                      color: '#b84b1f',
                       fontSize: '11px',
                       fontWeight: 800,
                     }}
@@ -867,7 +874,7 @@ export default function ReceptionPage() {
                   </span>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>
+                      <p style={{ fontSize: '13px', fontWeight: 700, color: '#1e1915' }}>
                         {row.patient.name}
                       </p>
                       {row.isEmergency && (
@@ -887,7 +894,7 @@ export default function ReceptionPage() {
                         </span>
                       )}
                     </div>
-                    <p style={{ fontSize: '11px', color: '#64748b' }}>
+                    <p style={{ fontSize: '11px', color: '#8f8279' }}>
                       Checked-in{' '}
                       {new Date(row.checkedInAt).toLocaleTimeString('en-IN', {
                         hour: '2-digit',
@@ -896,18 +903,18 @@ export default function ReceptionPage() {
                     </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>
+                    <p style={{ fontSize: '11px', color: '#9c8f84', textTransform: 'uppercase' }}>
                       Queue State
                     </p>
-                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#5f544c' }}>
                       {row.stateLabel}
                     </p>
                   </div>
                   <div>
-                    <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>
+                    <p style={{ fontSize: '11px', color: '#9c8f84', textTransform: 'uppercase' }}>
                       ETA
                     </p>
-                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#0f172a' }}>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: '#1e1915' }}>
                       {row.etaLabel}
                     </p>
                   </div>
@@ -926,10 +933,10 @@ export default function ReceptionPage() {
           <div
             ref={lookupSectionRef}
             style={{
-              background: '#ffffff',
+              background: '#f7f2ee',
               borderRadius: '20px',
               padding: '28px',
-              border: '1px solid #e2e8f0',
+              border: '1px solid #d7cdc5',
               boxShadow: 'var(--shadow-md)',
               marginBottom: '24px',
             }}
@@ -938,14 +945,14 @@ export default function ReceptionPage() {
               style={{
                 fontSize: '16px',
                 fontWeight: 700,
-                color: '#0f172a',
+                color: '#1e1915',
                 marginBottom: '4px',
               }}
             >
               Patient Lookup
             </h3>
             <p
-              style={{ fontSize: '13px', color: '#475569', marginBottom: '20px' }}
+              style={{ fontSize: '13px', color: '#6f635b', marginBottom: '20px' }}
             >
               Search by mobile number to check-in a patient
             </p>
@@ -960,12 +967,12 @@ export default function ReceptionPage() {
                   gap: '10px',
                   padding: '14px 16px',
                   borderRadius: '14px',
-                  border: '1.5px solid #e2e8f0',
-                  background: '#f8fafc',
+                  border: '1.5px solid #d7cdc5',
+                  background: '#f5efea',
                 }}
               >
-                <Phone size={18} color="#94a3b8" />
-                <input
+                <Phone size={18} color={THEME_ICON_MUTED} />
+                <input suppressHydrationWarning
                   id="reception-mobile-search"
                   type="tel"
                   placeholder="Enter 10-digit mobile number"
@@ -977,26 +984,26 @@ export default function ReceptionPage() {
                     background: 'transparent',
                     outline: 'none',
                     fontSize: '14px',
-                    color: '#0f172a',
+                    color: '#1e1915',
                     width: '100%',
                   }}
                 />
               </div>
-              <button
+              <button suppressHydrationWarning
                 onClick={handleSearch}
                 disabled={isSearching}
                 style={{
                   padding: '14px 24px',
-                  borderRadius: '14px',
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #0f766e, #0d6560)',
-                  color: '#ffffff',
+                  borderRadius: '16px',
+                  border: `1px solid ${THEME_PRIMARY_BUTTON_BORDER}`,
+                  background: THEME_PRIMARY_BUTTON_BG,
+                  color: '#fffaf6',
                   fontSize: '14px',
-                  fontWeight: 600,
+                  fontWeight: 700,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: '0 4px 14px rgba(15,118,110,0.25)',
+                  boxShadow: THEME_PRIMARY_BUTTON_SHADOW,
                 }}
               >
                 <Search size={16} />
@@ -1013,7 +1020,7 @@ export default function ReceptionPage() {
                 flexWrap: 'wrap',
               }}
             >
-              <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+              <span style={{ fontSize: '12px', color: '#9c8f84' }}>
                 Try:
               </span>
               {[
@@ -1026,7 +1033,7 @@ export default function ReceptionPage() {
                 '9876543270',
                 '9876543280',
               ].map((num) => (
-                <button
+                <button suppressHydrationWarning
                   key={num}
                   onClick={() => {
                     runSearchByMobile(num);
@@ -1034,10 +1041,10 @@ export default function ReceptionPage() {
                   style={{
                     padding: '4px 10px',
                     borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
-                    background: '#f8fafc',
+                    border: '1px solid #d7cdc5',
+                    background: '#f5efea',
                     fontSize: '12px',
-                    color: '#475569',
+                    color: '#6f635b',
                   }}
                 >
                   {num}
@@ -1049,7 +1056,7 @@ export default function ReceptionPage() {
           {pendingConsents.length > 0 && (
             <div
               style={{
-                background: '#ffffff',
+                background: '#f7f2ee',
                 borderRadius: '16px',
                 padding: '18px',
                 border: '1px solid #fde68a',
@@ -1091,35 +1098,35 @@ export default function ReceptionPage() {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       borderRadius: '10px',
-                      border: '1px solid #f1f5f9',
-                      background: '#f8fafc',
+                      border: '1px solid #eee7df',
+                      background: '#f5efea',
                       padding: '10px 12px',
                     }}
                   >
                     <div>
-                      <p style={{ fontSize: '13px', fontWeight: 600, color: '#0f172a' }}>
+                      <p style={{ fontSize: '13px', fontWeight: 600, color: '#1e1915' }}>
                         {entry.patientName}
                       </p>
-                      <p style={{ fontSize: '11px', color: '#64748b' }}>
-                        +91 {entry.mobile} · OTP attempts: {entry.attempts}
+                      <p style={{ fontSize: '11px', color: '#8f8279' }}>
+                        +91 {entry.mobile} - OTP attempts: {entry.attempts}
                       </p>
                     </div>
                     <div style={{ display: 'flex', gap: '6px' }}>
-                      <button
+                      <button suppressHydrationWarning
                         onClick={() => runSearchByMobile(entry.mobile)}
                         style={{
                           padding: '6px 10px',
                           borderRadius: '8px',
-                          border: '1px solid #e2e8f0',
-                          background: '#ffffff',
-                          color: '#334155',
+                          border: '1px solid #d7cdc5',
+                          background: '#f7f2ee',
+                          color: '#5f544c',
                           fontSize: '11px',
                           fontWeight: 700,
                         }}
                       >
                         Open
                       </button>
-                      <button
+                      <button suppressHydrationWarning
                         onClick={() => {
                           const patient = getPatientById(entry.patientId);
                           if (!patient) return;
@@ -1131,7 +1138,7 @@ export default function ReceptionPage() {
                         style={{
                           padding: '6px 10px',
                           borderRadius: '8px',
-                          border: '1px solid #f59e0b',
+                          border: '1px solid #e0a148',
                           background: '#fffbeb',
                           color: '#92400e',
                           fontSize: '11px',
@@ -1155,12 +1162,12 @@ export default function ReceptionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 style={{
-                  background: '#ffffff',
+                  background: '#f7f2ee',
                   borderRadius: '20px',
                   padding: '28px',
                   border: consentGranted
-                    ? '2px solid #10b981'
-                    : '1px solid #e2e8f0',
+                    ? '2px solid #49a26c'
+                    : '1px solid #d7cdc5',
                   boxShadow: 'var(--shadow-md)',
                 }}
               >
@@ -1178,12 +1185,12 @@ export default function ReceptionPage() {
                       width: '56px',
                       height: '56px',
                       borderRadius: '16px',
-                      background:
-                        'linear-gradient(135deg, #0f766e, #14b8a6)',
+                      background: THEME_AVATAR_BG,
+                      border: `1px solid ${THEME_PRIMARY_BUTTON_BORDER}`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#fff',
+                      color: '#fffaf6',
                       fontSize: '18px',
                       fontWeight: 700,
                     }}
@@ -1195,14 +1202,14 @@ export default function ReceptionPage() {
                       style={{
                         fontSize: '18px',
                         fontWeight: 700,
-                        color: '#0f172a',
+                        color: '#1e1915',
                       }}
                     >
                       {foundPatient.name}
                     </h4>
-                    <p style={{ fontSize: '13px', color: '#475569' }}>
-                      {foundPatient.gender} · {getAge(foundPatient.date_of_birth)}{' '}
-                      years · Blood: {foundPatient.blood_group}
+                    <p style={{ fontSize: '13px', color: '#6f635b' }}>
+                      {foundPatient.gender} - {getAge(foundPatient.date_of_birth)} years - Blood:{' '}
+                      {foundPatient.blood_group}
                     </p>
                   </div>
                   {consentGranted && (
@@ -1221,7 +1228,7 @@ export default function ReceptionPage() {
                     >
                       <UserCheck size={14} />
                       {foundPatientQueueEntry
-                        ? `${foundPatientQueueEntry.isEmergency ? 'Emergency · ' : ''}Token ${formatToken(foundPatientQueueEntry.tokenNumber)}`
+                        ? `${foundPatientQueueEntry.isEmergency ? 'Emergency - ' : ''}Token ${formatToken(foundPatientQueueEntry.tokenNumber)}`
                         : 'Records Synced'}
                     </div>
                   )}
@@ -1252,15 +1259,15 @@ export default function ReceptionPage() {
                       style={{
                         padding: '12px',
                         borderRadius: '12px',
-                        background: '#f8fafc',
-                        border: '1px solid #f1f5f9',
+                        background: '#f5efea',
+                        border: '1px solid #eee7df',
                       }}
                     >
                       <p
                         style={{
                           fontSize: '11px',
                           fontWeight: 600,
-                          color: '#94a3b8',
+                          color: '#9c8f84',
                           textTransform: 'uppercase',
                           letterSpacing: '0.05em',
                           marginBottom: '4px',
@@ -1271,7 +1278,7 @@ export default function ReceptionPage() {
                       <p
                         style={{
                           fontSize: '13px',
-                          color: '#0f172a',
+                          color: '#1e1915',
                           fontWeight: 500,
                         }}
                       >
@@ -1298,7 +1305,7 @@ export default function ReceptionPage() {
                       fontWeight: 600,
                     }}
                   >
-                    📋 {recordCount} past records found across{' '}
+                    Records: {recordCount} past records found across{' '}
                     {sourceFacilities.length} facility(s)
                   </p>
                   <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
@@ -1316,7 +1323,7 @@ export default function ReceptionPage() {
                             fontWeight: 500,
                           }}
                         >
-                          🏥 {fac?.name}
+                          Facility: {fac?.name}
                         </span>
                       );
                     })}
@@ -1328,8 +1335,8 @@ export default function ReceptionPage() {
                     style={{
                       padding: '14px',
                       borderRadius: '14px',
-                      background: isEmergencyCase ? '#fef2f2' : '#f8fafc',
-                      border: isEmergencyCase ? '1px solid #fecaca' : '1px solid #e2e8f0',
+                      background: isEmergencyCase ? '#fef2f2' : '#f5efea',
+                      border: isEmergencyCase ? '1px solid #fecaca' : '1px solid #d7cdc5',
                       marginBottom: '20px',
                     }}
                   >
@@ -1343,25 +1350,25 @@ export default function ReceptionPage() {
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <AlertTriangle size={16} color={isEmergencyCase ? '#dc2626' : '#64748b'} />
+                        <AlertTriangle size={16} color={isEmergencyCase ? '#dc2626' : THEME_ICON_MUTED} />
                         <p
                           style={{
                             fontSize: '13px',
                             fontWeight: 700,
-                            color: isEmergencyCase ? '#7f1d1d' : '#334155',
+                            color: isEmergencyCase ? '#7f1d1d' : '#5f544c',
                           }}
                         >
                           Emergency Case Priority
                         </p>
                       </div>
-                      <button
+                      <button suppressHydrationWarning
                         onClick={() => setIsEmergencyCase((prev) => !prev)}
                         style={{
                           padding: '7px 10px',
                           borderRadius: '10px',
-                          border: isEmergencyCase ? '1px solid #f87171' : '1px solid #e2e8f0',
-                          background: isEmergencyCase ? '#fee2e2' : '#ffffff',
-                          color: isEmergencyCase ? '#b91c1c' : '#475569',
+                          border: isEmergencyCase ? '1px solid #f87171' : '1px solid #d7cdc5',
+                          background: isEmergencyCase ? '#fee2e2' : '#f7f2ee',
+                          color: isEmergencyCase ? '#b91c1c' : '#6f635b',
                           fontSize: '12px',
                           fontWeight: 700,
                         }}
@@ -1369,7 +1376,7 @@ export default function ReceptionPage() {
                         {isEmergencyCase ? 'Emergency Enabled' : 'Mark Emergency'}
                       </button>
                     </div>
-                    <input
+                    <input suppressHydrationWarning
                       type="text"
                       placeholder="Optional reason (e.g. chest pain, severe bleeding, trauma)"
                       value={emergencyReason}
@@ -1378,10 +1385,10 @@ export default function ReceptionPage() {
                         width: '100%',
                         padding: '10px 12px',
                         borderRadius: '10px',
-                        border: '1px solid #e2e8f0',
+                        border: '1px solid #d7cdc5',
                         fontSize: '12px',
-                        color: '#0f172a',
-                        background: '#ffffff',
+                        color: '#1e1915',
+                        background: '#f7f2ee',
                       }}
                     />
                   </div>
@@ -1390,7 +1397,7 @@ export default function ReceptionPage() {
                 {/* Action Buttons */}
                 {!consentGranted ? (
                   !showOTP ? (
-                    <button
+                    <button suppressHydrationWarning
                       onClick={handleRequestConsent}
                       style={{
                         width: '100%',
@@ -1398,7 +1405,7 @@ export default function ReceptionPage() {
                         borderRadius: '14px',
                         border: 'none',
                         background:
-                          'linear-gradient(135deg, #0f766e, #0d6560)',
+                          'linear-gradient(135deg, #f1662a, #dc5c24)',
                         color: '#fff',
                         fontSize: '14px',
                         fontWeight: 600,
@@ -1421,7 +1428,7 @@ export default function ReceptionPage() {
                       <p
                         style={{
                           fontSize: '13px',
-                          color: '#475569',
+                          color: '#6f635b',
                           textAlign: 'center',
                           marginBottom: '16px',
                         }}
@@ -1437,7 +1444,7 @@ export default function ReceptionPage() {
                         }}
                       >
                         {otpDigits.map((digit, i) => (
-                          <input
+                          <input suppressHydrationWarning
                             key={i}
                             id={`otp-${i}`}
                             type="text"
@@ -1455,17 +1462,17 @@ export default function ReceptionPage() {
                               width: '56px',
                               height: '56px',
                               borderRadius: '14px',
-                              border: '2px solid #e2e8f0',
+                              border: '2px solid #d7cdc5',
                               textAlign: 'center',
                               fontSize: '22px',
                               fontWeight: 700,
-                              color: '#0f172a',
-                              background: '#f8fafc',
+                              color: '#1e1915',
+                              background: '#f5efea',
                             }}
                           />
                         ))}
                       </div>
-                      <button
+                      <button suppressHydrationWarning
                         onClick={handleVerifyOTP}
                         disabled={otpDigits.some((d) => !d)}
                         style={{
@@ -1474,18 +1481,18 @@ export default function ReceptionPage() {
                           borderRadius: '14px',
                           border: 'none',
                           background: otpDigits.every((d) => d)
-                            ? 'linear-gradient(135deg, #0f766e, #0d6560)'
-                            : '#e2e8f0',
+                            ? 'linear-gradient(135deg, #f1662a, #dc5c24)'
+                            : '#d7cdc5',
                           color: otpDigits.every((d) => d)
                             ? '#fff'
-                            : '#94a3b8',
+                            : '#9c8f84',
                           fontSize: '14px',
                           fontWeight: 600,
                         }}
                       >
                         Verify & Grant Access
                       </button>
-                      <button
+                      <button suppressHydrationWarning
                         onClick={() => {
                           if (foundPatient) issueConsentOtp(foundPatient, 'resend');
                         }}
@@ -1494,9 +1501,9 @@ export default function ReceptionPage() {
                           marginTop: '10px',
                           padding: '10px',
                           borderRadius: '12px',
-                          border: '1px solid #e2e8f0',
-                          background: '#f8fafc',
-                          color: '#475569',
+                          border: '1px solid #d7cdc5',
+                          background: '#f5efea',
+                          color: '#6f635b',
                           fontSize: '12px',
                           fontWeight: 600,
                         }}
@@ -1516,7 +1523,7 @@ export default function ReceptionPage() {
                       padding: '14px',
                       borderRadius: '14px',
                       border: 'none',
-                      background: 'linear-gradient(135deg, #10b981, #059669)',
+                      background: 'linear-gradient(135deg, #49a26c, #059669)',
                       color: '#fff',
                       fontSize: '14px',
                       fontWeight: 600,
@@ -1535,10 +1542,10 @@ export default function ReceptionPage() {
         <div
           ref={queueSectionRef}
           style={{
-            background: '#ffffff',
+            background: '#f7f2ee',
             borderRadius: '20px',
             padding: '28px',
-            border: '1px solid #e2e8f0',
+            border: '1px solid #d7cdc5',
             boxShadow: 'var(--shadow-md)',
             height: 'fit-content',
           }}
@@ -1556,7 +1563,7 @@ export default function ReceptionPage() {
                 style={{
                   fontSize: '16px',
                   fontWeight: 700,
-                  color: '#0f172a',
+                  color: '#1e1915',
                 }}
               >
                 Patient Queue
@@ -1564,7 +1571,7 @@ export default function ReceptionPage() {
               <p
                 style={{
                   fontSize: '13px',
-                  color: '#475569',
+                  color: '#6f635b',
                   marginTop: '2px',
                 }}
               >
@@ -1575,8 +1582,8 @@ export default function ReceptionPage() {
               style={{
                 padding: '4px 12px',
                 borderRadius: '20px',
-                background: '#f0fdfa',
-                color: '#0f766e',
+                background: '#f8f1ea',
+                color: '#f1662a',
                 fontSize: '12px',
                 fontWeight: 600,
               }}
@@ -1591,19 +1598,19 @@ export default function ReceptionPage() {
                 padding: '48px 24px',
                 textAlign: 'center',
                 borderRadius: '16px',
-                background: '#f8fafc',
-                border: '1px dashed #e2e8f0',
+                background: '#f5efea',
+                border: '1px dashed #d7cdc5',
               }}
             >
               <Clock
                 size={40}
-                color="#94a3b8"
+                color={THEME_ICON_MUTED}
                 style={{ margin: '0 auto 12px' }}
               />
-              <p style={{ fontSize: '14px', color: '#475569', fontWeight: 500 }}>
+              <p style={{ fontSize: '14px', color: '#6f635b', fontWeight: 500 }}>
                 {queueEmptyTitle}
               </p>
-              <p style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px' }}>
+              <p style={{ fontSize: '13px', color: '#9c8f84', marginTop: '4px' }}>
                 {queueEmptySubtitle}
               </p>
             </div>
@@ -1618,8 +1625,8 @@ export default function ReceptionPage() {
                     gap: '12px',
                     padding: '14px 16px',
                     borderRadius: '14px',
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
+                    background: '#f5efea',
+                    border: '1px solid #d7cdc5',
                     transition: 'all 0.2s ease',
                   }}
                 >
@@ -1628,12 +1635,12 @@ export default function ReceptionPage() {
                       width: '40px',
                       height: '40px',
                       borderRadius: '12px',
-                      background:
-                        'linear-gradient(135deg, #0f766e, #14b8a6)',
+                      background: THEME_AVATAR_BG,
+                      border: `1px solid ${THEME_PRIMARY_BUTTON_BORDER}`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: '#fff',
+                      color: '#fffaf6',
                       fontSize: '13px',
                       fontWeight: 700,
                       flexShrink: 0,
@@ -1646,7 +1653,7 @@ export default function ReceptionPage() {
                       style={{
                         fontSize: '14px',
                         fontWeight: 600,
-                        color: '#0f172a',
+                        color: '#1e1915',
                       }}
                     >
                       {q.patient.name}
@@ -1669,12 +1676,12 @@ export default function ReceptionPage() {
                         Emergency
                       </span>
                     )}
-                    <p style={{ fontSize: '12px', color: '#475569' }}>
-                      {q.patient.gender} ·{' '}
+                    <p style={{ fontSize: '12px', color: '#6f635b' }}>
+                      {q.patient.gender} -{' '}
                       {getAge(q.patient.date_of_birth)} yrs
                     </p>
-                    <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
-                      {formatToken(q.tokenNumber)} · Waiting: {getWaitingMinutes(q.checkedInAt)} min
+                    <p style={{ fontSize: '11px', color: '#9c8f84', marginTop: '2px' }}>
+                      {formatToken(q.tokenNumber)} - Waiting: {getWaitingMinutes(q.checkedInAt)} min
                     </p>
                   </div>
                   <div
@@ -1689,7 +1696,7 @@ export default function ReceptionPage() {
                   >
                     {queueStatusStyles[q.status].label}
                   </div>
-                  <ArrowRight size={16} color="#94a3b8" />
+                  <ArrowRight size={16} color={THEME_ICON_MUTED} />
                 </div>
               ))}
             </div>
@@ -1701,7 +1708,7 @@ export default function ReceptionPage() {
                 style={{
                   fontSize: '12px',
                   fontWeight: 700,
-                  color: '#475569',
+                  color: '#6f635b',
                   marginBottom: '8px',
                   textTransform: 'uppercase',
                   letterSpacing: '0.04em',
@@ -1719,13 +1726,13 @@ export default function ReceptionPage() {
                       justifyContent: 'space-between',
                       padding: '10px 12px',
                       borderRadius: '10px',
-                      background: '#ecfdf5',
+                      background: '#eaf5ed',
                       border: '1px solid #bbf7d0',
                     }}
                   >
                     <div>
                       <p style={{ fontSize: '13px', fontWeight: 600, color: '#14532d' }}>
-                        {entry.patient.name} · {formatToken(entry.tokenNumber)}
+                        {entry.patient.name} - {formatToken(entry.tokenNumber)}
                       </p>
                       <p style={{ fontSize: '11px', color: '#166534' }}>
                         Completed at{' '}
@@ -1740,7 +1747,7 @@ export default function ReceptionPage() {
                         padding: '4px 10px',
                         borderRadius: '999px',
                         background: '#22c55e',
-                        color: '#ffffff',
+                        color: '#f7f2ee',
                         fontSize: '11px',
                         fontWeight: 700,
                       }}
@@ -1757,3 +1764,6 @@ export default function ReceptionPage() {
     </div>
   );
 }
+
+
+

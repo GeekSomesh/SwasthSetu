@@ -46,30 +46,30 @@ const recordTypeConfig: Record<
   Prescription: {
     icon: Pill,
     label: 'Prescription',
-    bgColor: '#e0e7ff',
-    textColor: '#3730a3',
-    emoji: '💊',
+    bgColor: '#fff1e8',
+    textColor: '#f1662a',
+    emoji: 'Rx',
   },
   LabReport: {
     icon: FlaskConical,
     label: 'Lab Report',
-    bgColor: '#d1fae5',
-    textColor: '#065f46',
-    emoji: '🧪',
+    bgColor: '#f8f1ea',
+    textColor: '#c58145',
+    emoji: 'Lab',
   },
   Scan: {
     icon: ScanLine,
     label: 'Scan / Imaging',
-    bgColor: '#fef3c7',
-    textColor: '#92400e',
-    emoji: '📷',
+    bgColor: '#f8f1ea',
+    textColor: '#ac7447',
+    emoji: 'Scan',
   },
   DischargeSummary: {
     icon: ClipboardList,
     label: 'Discharge Summary',
-    bgColor: '#fce7f3',
-    textColor: '#9d174d',
-    emoji: '🏥',
+    bgColor: '#f8f1ea',
+    textColor: '#8f6d54',
+    emoji: 'Disc',
   },
 };
 
@@ -79,15 +79,22 @@ const queueStatusConfig: Record<
 > = {
   Waiting: {
     label: 'Pending Review',
-    bgColor: '#fffbeb',
-    textColor: '#92400e',
+    bgColor: '#fff8ed',
+    textColor: '#a06b36',
   },
   UnderDiagnosis: {
     label: 'Under Diagnosis',
-    bgColor: '#eff6ff',
-    textColor: '#1d4ed8',
+    bgColor: '#fff1e8',
+    textColor: '#f1662a',
   },
 };
+
+const THEME_ICON_ACCENT = '#f1662a';
+const THEME_ICON_MUTED = '#9c8f84';
+const THEME_ICON_SOFT_BG = '#f8f1ea';
+const THEME_ICON_SOFT_BORDER = '#ffe7da';
+const THEME_PRIMARY_GRADIENT = 'linear-gradient(145deg, #f1662a, #dc5c24)';
+const THEME_AVATAR_GRADIENT = 'linear-gradient(145deg, #f1662a, #e7672f)';
 
 type PrescriptionTemplate = {
   id: string;
@@ -210,9 +217,9 @@ export default function PatientTimelinePage() {
   if (!patient) {
     return (
       <div style={{ padding: '64px', textAlign: 'center' }}>
-        <p style={{ fontSize: '18px', color: '#475569' }}>Patient not found</p>
-        <Link href="/doctor" style={{ color: '#0f766e', marginTop: '16px', display: 'inline-block' }}>
-          ← Back to Dashboard
+        <p style={{ fontSize: '18px', color: '#6f635b' }}>Patient not found</p>
+        <Link href="/doctor" style={{ color: THEME_ICON_ACCENT, marginTop: '16px', display: 'inline-block' }}>
+          Back to Dashboard
         </Link>
       </div>
     );
@@ -345,7 +352,7 @@ export default function PatientTimelinePage() {
             alignItems: 'center',
             gap: '6px',
             fontSize: '13px',
-            color: '#475569',
+            color: '#6f635b',
             textDecoration: 'none',
             marginBottom: '16px',
           }}
@@ -372,7 +379,7 @@ export default function PatientTimelinePage() {
                 width: '56px',
                 height: '56px',
                 borderRadius: '16px',
-                background: 'linear-gradient(135deg, #0f766e, #14b8a6)',
+                background: THEME_AVATAR_GRADIENT,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -387,9 +394,9 @@ export default function PatientTimelinePage() {
               <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#0f172a' }}>
                 {patient.name}
               </h2>
-              <p style={{ fontSize: '13px', color: '#475569', marginTop: '2px' }}>
-                {patient.gender} · {getAge(patient.date_of_birth)} years · Blood Group:{' '}
-                {patient.blood_group} · Mobile: +91 {patient.mobile_number}
+              <p style={{ fontSize: '13px', color: '#6f635b', marginTop: '2px' }}>
+                {patient.gender} - {getAge(patient.date_of_birth)} years - Blood Group:{' '}
+                {patient.blood_group} - Mobile: +91 {patient.mobile_number}
               </p>
             </div>
           </div>
@@ -408,40 +415,40 @@ export default function PatientTimelinePage() {
                 {queueStatusConfig[queueStatus].label}
               </span>
             )}
-            <button
+            <button suppressHydrationWarning
               onClick={handleMarkDiagnosed}
               disabled={!queueStatus}
               style={{
                 padding: '12px 18px',
                 borderRadius: '12px',
                 border: 'none',
-                background: queueStatus ? 'linear-gradient(135deg, #16a34a, #15803d)' : '#e2e8f0',
-                color: queueStatus ? '#ffffff' : '#94a3b8',
+                background: queueStatus ? THEME_PRIMARY_GRADIENT : '#e2e8f0',
+                color: queueStatus ? '#ffffff' : '#9c8f84',
                 fontSize: '13px',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: queueStatus ? '0 4px 14px rgba(22,163,74,0.25)' : 'none',
+                boxShadow: queueStatus ? '0 12px 24px -18px rgba(220, 92, 36, 0.82)' : 'none',
               }}
             >
               <Activity size={16} />
               Mark Diagnosed
             </button>
-            <button
+            <button suppressHydrationWarning
               onClick={() => setShowNewVisit(true)}
               style={{
                 padding: '12px 20px',
                 borderRadius: '12px',
                 border: 'none',
-                background: 'linear-gradient(135deg, #0f766e, #0d6560)',
+                background: THEME_PRIMARY_GRADIENT,
                 color: '#ffffff',
                 fontSize: '13px',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: '0 4px 14px rgba(15,118,110,0.25)',
+                boxShadow: '0 12px 24px -18px rgba(220, 92, 36, 0.82)',
               }}
             >
               <Plus size={16} />
@@ -470,7 +477,7 @@ export default function PatientTimelinePage() {
             alignItems: 'center',
             gap: '6px',
             padding: '0 12px',
-            color: '#94a3b8',
+            color: '#9c8f84',
           }}
         >
           <Filter size={16} />
@@ -485,7 +492,7 @@ export default function PatientTimelinePage() {
               : records.filter((r) => r.record_type === filter).length;
 
           return (
-            <button
+            <button suppressHydrationWarning
               key={filter}
               onClick={() => setActiveFilter(filter)}
               style={{
@@ -495,13 +502,13 @@ export default function PatientTimelinePage() {
                 background: isActive
                   ? config
                     ? config.bgColor
-                    : '#0f766e'
+                    : '#f1662a'
                   : 'transparent',
                 color: isActive
                   ? config
                     ? config.textColor
                     : '#ffffff'
-                  : '#475569',
+                  : '#6f635b',
                 fontSize: '13px',
                 fontWeight: isActive ? 600 : 400,
                 display: 'flex',
@@ -558,7 +565,7 @@ export default function PatientTimelinePage() {
                 }}
                 onClick={() => setSelectedRecord(record)}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#99f6e4';
+                  e.currentTarget.style.borderColor = THEME_ICON_SOFT_BORDER;
                   e.currentTarget.style.boxShadow = 'var(--shadow-md)';
                 }}
                 onMouseLeave={(e) => {
@@ -601,11 +608,11 @@ export default function PatientTimelinePage() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
-                      color: '#475569',
+                      color: '#6f635b',
                       fontSize: '13px',
                     }}
                   >
-                    <Calendar size={14} />
+                    <Calendar size={14} color={THEME_ICON_MUTED} />
                     {new Date(record.date).toLocaleDateString('en-IN', {
                       day: 'numeric',
                       month: 'short',
@@ -634,7 +641,7 @@ export default function PatientTimelinePage() {
                       border: '1px solid #f1f5f9',
                     }}
                   >
-                    <Building2 size={14} color="#0f766e" />
+                    <Building2 size={14} color={THEME_ICON_ACCENT} />
                     <span style={{ fontSize: '12px', color: '#0f172a', fontWeight: 500 }}>
                       {facility?.name || 'Unknown Facility'}
                     </span>
@@ -650,18 +657,18 @@ export default function PatientTimelinePage() {
                       border: '1px solid #f1f5f9',
                     }}
                   >
-                    <User size={14} color="#3b82f6" />
+                    <User size={14} color={THEME_ICON_ACCENT} />
                     <span style={{ fontSize: '12px', color: '#0f172a', fontWeight: 500 }}>
                       {doctor?.name || 'Unknown Doctor'}
                       {doctor?.specialty && (
-                        <span style={{ color: '#94a3b8' }}> · {doctor.specialty}</span>
+                        <span style={{ color: '#9c8f84' }}> - {doctor.specialty}</span>
                       )}
                     </span>
                   </div>
                 </div>
 
                 {/* Notes */}
-                <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.6, marginBottom: '14px' }}>
+                <p style={{ fontSize: '13px', color: '#6f635b', lineHeight: 1.6, marginBottom: '14px' }}>
                   {record.notes}
                 </p>
 
@@ -715,8 +722,8 @@ export default function PatientTimelinePage() {
                         style={{
                           padding: '8px 14px',
                           borderRadius: '10px',
-                          background: '#f0fdfa',
-                          border: '1px solid #ccfbf1',
+                          background: THEME_ICON_SOFT_BG,
+                          border: `1px solid ${THEME_ICON_SOFT_BORDER}`,
                           flex: 1,
                         }}
                       >
@@ -728,12 +735,12 @@ export default function PatientTimelinePage() {
                             marginBottom: '4px',
                           }}
                         >
-                          <Pill size={12} color="#0f766e" />
+                          <Pill size={12} color={THEME_ICON_ACCENT} />
                           <span
                             style={{
                               fontSize: '11px',
                               fontWeight: 600,
-                              color: '#0f766e',
+                              color: '#f1662a',
                               textTransform: 'uppercase',
                               letterSpacing: '0.04em',
                             }}
@@ -748,7 +755,7 @@ export default function PatientTimelinePage() {
                               style={{
                                 padding: '2px 8px',
                                 borderRadius: '6px',
-                                background: '#ccfbf1',
+                                background: THEME_ICON_SOFT_BORDER,
                                 fontSize: '11px',
                                 color: '#134e4a',
                                 fontWeight: 500,
@@ -764,7 +771,7 @@ export default function PatientTimelinePage() {
                 )}
 
                 {/* View Document Button */}
-                <button
+                <button suppressHydrationWarning
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedRecord(record);
@@ -774,7 +781,7 @@ export default function PatientTimelinePage() {
                     borderRadius: '10px',
                     border: '1px solid #e2e8f0',
                     background: '#f8fafc',
-                    color: '#0f766e',
+                    color: '#f1662a',
                     fontSize: '13px',
                     fontWeight: 600,
                     display: 'flex',
@@ -800,11 +807,11 @@ export default function PatientTimelinePage() {
               border: '1px dashed #e2e8f0',
             }}
           >
-            <FileText size={48} color="#94a3b8" style={{ margin: '0 auto 16px' }} />
-            <p style={{ fontSize: '15px', color: '#475569', fontWeight: 500 }}>
+            <FileText size={48} color={THEME_ICON_MUTED} style={{ margin: '0 auto 16px' }} />
+            <p style={{ fontSize: '15px', color: '#6f635b', fontWeight: 500 }}>
               No records found for this filter
             </p>
-            <p style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px' }}>
+            <p style={{ fontSize: '13px', color: '#9c8f84', marginTop: '4px' }}>
               Try selecting a different record type
             </p>
           </div>
@@ -880,7 +887,7 @@ export default function PatientTimelinePage() {
                     {selectedRecord.title}
                   </h3>
                 </div>
-                <button
+                <button suppressHydrationWarning
                   onClick={() => setSelectedRecord(null)}
                   style={{
                     width: '36px',
@@ -893,7 +900,7 @@ export default function PatientTimelinePage() {
                     justifyContent: 'center',
                   }}
                 >
-                  <X size={18} color="#475569" />
+                  <X size={18} color={THEME_ICON_MUTED} />
                 </button>
               </div>
 
@@ -909,22 +916,22 @@ export default function PatientTimelinePage() {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Calendar size={14} color="#475569" />
-                  <span style={{ fontSize: '12px', color: '#475569' }}>
+                  <Calendar size={14} color={THEME_ICON_MUTED} />
+                  <span style={{ fontSize: '12px', color: '#6f635b' }}>
                     {new Date(selectedRecord.date).toLocaleDateString('en-IN', {
                       day: 'numeric', month: 'long', year: 'numeric',
                     })}
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Building2 size={14} color="#0f766e" />
-                  <span style={{ fontSize: '12px', color: '#475569' }}>
+                  <Building2 size={14} color={THEME_ICON_ACCENT} />
+                  <span style={{ fontSize: '12px', color: '#6f635b' }}>
                     {getFacilityById(selectedRecord.facility_id)?.name}
                   </span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <User size={14} color="#3b82f6" />
-                  <span style={{ fontSize: '12px', color: '#475569' }}>
+                  <User size={14} color={THEME_ICON_ACCENT} />
+                  <span style={{ fontSize: '12px', color: '#6f635b' }}>
                     {getDoctorById(selectedRecord.doctor_id)?.name}
                   </span>
                 </div>
@@ -968,10 +975,10 @@ export default function PatientTimelinePage() {
                   <p style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', marginBottom: '4px' }}>
                     {selectedRecord.title}
                   </p>
-                  <p style={{ fontSize: '12px', color: '#94a3b8' }}>
-                    Document preview · {selectedRecord.document_url}
+                  <p style={{ fontSize: '12px', color: '#9c8f84' }}>
+                    Document preview  -  {selectedRecord.document_url}
                   </p>
-                  <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>
+                  <p style={{ fontSize: '11px', color: '#9c8f84', marginTop: '8px' }}>
                     In production, the actual PDF/Image will render here
                   </p>
                 </div>
@@ -990,7 +997,7 @@ export default function PatientTimelinePage() {
                     style={{
                       fontSize: '12px',
                       fontWeight: 600,
-                      color: '#94a3b8',
+                      color: '#9c8f84',
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                       marginBottom: '8px',
@@ -1036,15 +1043,15 @@ export default function PatientTimelinePage() {
                     style={{
                       padding: '16px',
                       borderRadius: '14px',
-                      background: '#f0fdfa',
-                      border: '1px solid #ccfbf1',
+                      background: THEME_ICON_SOFT_BG,
+                      border: `1px solid ${THEME_ICON_SOFT_BORDER}`,
                     }}
                   >
                     <h4
                       style={{
                         fontSize: '12px',
                         fontWeight: 600,
-                        color: '#0f766e',
+                        color: '#f1662a',
                         textTransform: 'uppercase',
                         letterSpacing: '0.04em',
                         marginBottom: '8px',
@@ -1062,10 +1069,10 @@ export default function PatientTimelinePage() {
                             gap: '8px',
                             padding: '8px 12px',
                             borderRadius: '8px',
-                            background: '#ccfbf1',
+                            background: THEME_ICON_SOFT_BORDER,
                           }}
                         >
-                          <Pill size={14} color="#0f766e" />
+                          <Pill size={14} color={THEME_ICON_ACCENT} />
                           <span style={{ fontSize: '13px', color: '#134e4a', fontWeight: 500 }}>
                             {med}
                           </span>
@@ -1128,7 +1135,7 @@ export default function PatientTimelinePage() {
               <div
                 style={{
                   padding: '24px 28px',
-                  background: 'linear-gradient(135deg, #f0fdfa, #f8fafc)',
+                  background: 'linear-gradient(135deg, #fff1e8, #f5efea)',
                   borderBottom: '1px solid #e2e8f0',
                   display: 'flex',
                   justifyContent: 'space-between',
@@ -1139,11 +1146,11 @@ export default function PatientTimelinePage() {
                   <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
                     New Visit Note
                   </h3>
-                  <p style={{ fontSize: '13px', color: '#475569', marginTop: '2px' }}>
-                    For {patient.name} · {new Date().toLocaleDateString('en-IN')}
+                  <p style={{ fontSize: '13px', color: '#6f635b', marginTop: '2px' }}>
+                    For {patient.name}  -  {new Date().toLocaleDateString('en-IN')}
                   </p>
                 </div>
-                <button
+                <button suppressHydrationWarning
                   onClick={() => setShowNewVisit(false)}
                   style={{
                     width: '36px',
@@ -1156,7 +1163,7 @@ export default function PatientTimelinePage() {
                     justifyContent: 'center',
                   }}
                 >
-                  <X size={18} color="#475569" />
+                  <X size={18} color={THEME_ICON_MUTED} />
                 </button>
               </div>
 
@@ -1176,7 +1183,7 @@ export default function PatientTimelinePage() {
                       display: 'block',
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#6f635b',
                       marginBottom: '8px',
                     }}
                   >
@@ -1203,22 +1210,22 @@ export default function PatientTimelinePage() {
                     ))}
                   </select>
                   <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    <button
+                    <button suppressHydrationWarning
                       type="button"
                       onClick={handleApplyTemplate}
                       style={{
                         padding: '10px 12px',
                         borderRadius: '10px',
-                        border: '1px solid #99f6e4',
-                        background: '#f0fdfa',
-                        color: '#0f766e',
+                        border: `1px solid ${THEME_ICON_SOFT_BORDER}`,
+                        background: THEME_ICON_SOFT_BG,
+                        color: '#f1662a',
                         fontSize: '12px',
                         fontWeight: 700,
                       }}
                     >
                       Apply Template
                     </button>
-                    <button
+                    <button suppressHydrationWarning
                       type="button"
                       onClick={handleClearTemplate}
                       style={{
@@ -1226,7 +1233,7 @@ export default function PatientTimelinePage() {
                         borderRadius: '10px',
                         border: '1px solid #e2e8f0',
                         background: '#ffffff',
-                        color: '#475569',
+                        color: '#6f635b',
                         fontSize: '12px',
                         fontWeight: 700,
                       }}
@@ -1242,13 +1249,13 @@ export default function PatientTimelinePage() {
                       display: 'block',
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#6f635b',
                       marginBottom: '8px',
                     }}
                   >
                     Diagnosis
                   </label>
-                  <input
+                  <input suppressHydrationWarning
                     type="text"
                     placeholder="e.g. Viral Fever, Upper Respiratory Infection"
                     value={newVisitData.diagnosis}
@@ -1273,7 +1280,7 @@ export default function PatientTimelinePage() {
                       display: 'block',
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#6f635b',
                       marginBottom: '8px',
                     }}
                   >
@@ -1305,7 +1312,7 @@ export default function PatientTimelinePage() {
                       display: 'block',
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#6f635b',
                       marginBottom: '8px',
                     }}
                   >
@@ -1337,13 +1344,13 @@ export default function PatientTimelinePage() {
                       display: 'block',
                       fontSize: '13px',
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#6f635b',
                       marginBottom: '8px',
                     }}
                   >
                     Follow-up Date
                   </label>
-                  <input
+                  <input suppressHydrationWarning
                     type="date"
                     value={newVisitData.followUp}
                     onChange={(e) =>
@@ -1361,14 +1368,14 @@ export default function PatientTimelinePage() {
                   />
                 </div>
 
-                <button
+                <button suppressHydrationWarning
                   onClick={handleNewVisitSubmit}
                   style={{
                     width: '100%',
                     padding: '14px',
                     borderRadius: '14px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #0f766e, #0d6560)',
+                    background: THEME_PRIMARY_GRADIENT,
                     color: '#fff',
                     fontSize: '14px',
                     fontWeight: 600,
@@ -1376,7 +1383,7 @@ export default function PatientTimelinePage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '8px',
-                    boxShadow: '0 4px 14px rgba(15,118,110,0.25)',
+                    boxShadow: '0 12px 24px -18px rgba(220, 92, 36, 0.82)',
                   }}
                 >
                   <Send size={16} />

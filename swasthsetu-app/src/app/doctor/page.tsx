@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { Users, Clock, FileText, Activity, ArrowRight, Stethoscope, AlertTriangle } from 'lucide-react';
@@ -37,20 +37,26 @@ const statusStyles: Record<DashboardStatus, { label: string; bg: string; color: 
   },
   UnderDiagnosis: {
     label: 'Under Diagnosis',
-    bg: '#eff6ff',
-    color: '#1d4ed8',
+    bg: '#eef4f8',
+    color: '#4e82bb',
   },
   Diagnosed: {
     label: 'Diagnosed',
-    bg: '#ecfdf5',
+    bg: '#eaf5ed',
     color: '#166534',
   },
   Historical: {
     label: 'History Only',
-    bg: '#f1f5f9',
-    color: '#475569',
+    bg: '#eee7df',
+    color: '#6f635b',
   },
 };
+
+const THEME_AVATAR_BG = 'linear-gradient(145deg, #f1662a, #e7672f)';
+const THEME_AVATAR_BORDER = '#dc5c24';
+const THEME_ICON_ACCENT = '#f1662a';
+const THEME_ICON_MUTED = '#9c8f84';
+const THEME_ICON_CHIP_BG = '#fff1e8';
 
 function bySearchTerm(row: DashboardPatientRow, searchTerm: string): boolean {
   const normalized = searchTerm.toLowerCase();
@@ -171,40 +177,40 @@ export default function DoctorPage() {
       label: 'Patients Today' as const,
       value: String(patientsTodayRows.length),
       icon: Users,
-      color: '#0f766e',
-      bg: '#f0fdfa',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       message: 'Showing all checked-in and diagnosed patients for today.',
     },
     {
       label: 'Pending Review' as const,
       value: String(pendingReviewRows.length),
       icon: Clock,
-      color: '#f59e0b',
-      bg: '#fffbeb',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       message: 'Showing patients pending review.',
     },
     {
       label: 'Records Accessed' as const,
       value: String(recordsAccessedRows.length),
       icon: FileText,
-      color: '#3b82f6',
-      bg: '#eff6ff',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       message: 'Showing patients currently under diagnosis.',
     },
     {
       label: 'Consultations Done' as const,
       value: String(consultationsDoneRows.length),
       icon: Activity,
-      color: '#10b981',
-      bg: '#ecfdf5',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       message: 'Showing patients marked diagnosed by doctors.',
     },
     {
       label: 'All Registered' as const,
       value: String(allRegisteredRows.length),
       icon: Users,
-      color: '#334155',
-      bg: '#f1f5f9',
+      color: THEME_ICON_ACCENT,
+      bg: THEME_ICON_CHIP_BG,
       message:
         'Showing complete patient registry for historical review and fresh prescriptions.',
     },
@@ -257,17 +263,17 @@ export default function DoctorPage() {
         }}
       >
         {stats.map((stat) => (
-          <button
+          <button suppressHydrationWarning
             key={stat.label}
             onClick={() => {
               setActiveStat(stat.label);
               setActionMessage(stat.message);
             }}
             style={{
-              background: activeStat === stat.label ? '#e0f2fe' : '#ffffff',
+              background: activeStat === stat.label ? '#f8f1ea' : '#f7f2ee',
               borderRadius: '16px',
               padding: '20px 24px',
-              border: activeStat === stat.label ? '2px solid #0ea5e9' : '1px solid #e2e8f0',
+              border: activeStat === stat.label ? '2px solid #ff7b41' : '1px solid #d7cdc5',
               display: 'flex',
               alignItems: 'center',
               gap: '16px',
@@ -290,10 +296,10 @@ export default function DoctorPage() {
               <stat.icon size={22} color={stat.color} />
             </div>
             <div>
-              <p style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a', lineHeight: 1 }}>
+              <p style={{ fontSize: '24px', fontWeight: 700, color: '#1e1915', lineHeight: 1 }}>
                 {stat.value}
               </p>
-              <p style={{ fontSize: '13px', color: '#475569', marginTop: '4px' }}>
+              <p style={{ fontSize: '13px', color: '#6f635b', marginTop: '4px' }}>
                 {stat.label}
               </p>
             </div>
@@ -304,11 +310,11 @@ export default function DoctorPage() {
         <div
           style={{
             marginBottom: '24px',
-            color: '#0369a1',
+            color: '#dc5c24',
             padding: '12px 16px',
-            background: '#e0f2fe',
+            background: '#f8f1ea',
             borderRadius: '12px',
-            border: '1px solid #7dd3fc',
+            border: '1px solid #ffe7da',
           }}
         >
           {actionMessage}
@@ -341,12 +347,12 @@ export default function DoctorPage() {
               )}
             </div>
           </div>
-          <button
+          <button suppressHydrationWarning
             onClick={handleReviewEmergencyQueue}
             style={{
               padding: '8px 12px',
               borderRadius: '10px',
-              border: '1px solid #fca5a5',
+              border: '1px solid #f2b2a1',
               background: '#fee2e2',
               color: '#991b1b',
               fontSize: '12px',
@@ -362,10 +368,10 @@ export default function DoctorPage() {
       {/* Patient List */}
       <div
         style={{
-          background: '#ffffff',
+          background: '#f7f2ee',
           borderRadius: '20px',
           padding: '28px',
-          border: '1px solid #e2e8f0',
+          border: '1px solid #d7cdc5',
           boxShadow: 'var(--shadow-md)',
         }}
       >
@@ -378,10 +384,10 @@ export default function DoctorPage() {
           }}
         >
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#1e1915' }}>
               {listTitle}
             </h3>
-            <p style={{ fontSize: '13px', color: '#475569', marginTop: '2px' }}>
+            <p style={{ fontSize: '13px', color: '#6f635b', marginTop: '2px' }}>
               {listSubtitle}
             </p>
           </div>
@@ -392,13 +398,13 @@ export default function DoctorPage() {
               gap: '8px',
               padding: '10px 16px',
               borderRadius: '12px',
-              background: '#f8fafc',
-              border: '1px solid #e2e8f0',
+              background: '#f5efea',
+              border: '1px solid #d7cdc5',
               width: '280px',
             }}
           >
-            <Stethoscope size={16} color="#94a3b8" />
-            <input
+            <Stethoscope size={16} color={THEME_ICON_MUTED} />
+            <input suppressHydrationWarning
               type="text"
               placeholder="Search by name or mobile..."
               value={searchTerm}
@@ -408,7 +414,7 @@ export default function DoctorPage() {
                 background: 'transparent',
                 outline: 'none',
                 fontSize: '13px',
-                color: '#0f172a',
+                color: '#1e1915',
                 width: '100%',
               }}
             />
@@ -422,7 +428,7 @@ export default function DoctorPage() {
             gridTemplateColumns: '2fr 1.2fr 0.8fr 0.8fr 1.1fr 1fr 0.5fr',
             padding: '12px 16px',
             borderRadius: '12px',
-            background: '#f8fafc',
+            background: '#f5efea',
             marginBottom: '8px',
           }}
         >
@@ -432,7 +438,7 @@ export default function DoctorPage() {
               style={{
                 fontSize: '11px',
                 fontWeight: 600,
-                color: '#94a3b8',
+                color: '#9c8f84',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
               }}
@@ -450,11 +456,11 @@ export default function DoctorPage() {
                 padding: '48px 16px',
                 textAlign: 'center',
                 borderRadius: '14px',
-                border: '1px dashed #e2e8f0',
-                background: '#f8fafc',
+                border: '1px dashed #d7cdc5',
+                background: '#f5efea',
               }}
             >
-              <p style={{ fontSize: '14px', color: '#475569', fontWeight: 600 }}>
+              <p style={{ fontSize: '14px', color: '#6f635b', fontWeight: 600 }}>
                 No patients found for this view
               </p>
             </div>
@@ -559,8 +565,8 @@ export default function DoctorPage() {
                     }}
                     onMouseEnter={(e) => {
                       if (!canOpenRow) return;
-                      e.currentTarget.style.background = '#f8fafc';
-                      e.currentTarget.style.borderColor = '#e2e8f0';
+                      e.currentTarget.style.background = '#f5efea';
+                      e.currentTarget.style.borderColor = '#d7cdc5';
                     }}
                     onMouseLeave={(e) => {
                       if (!canOpenRow) return;
@@ -575,11 +581,12 @@ export default function DoctorPage() {
                           width: '40px',
                           height: '40px',
                           borderRadius: '12px',
-                          background: 'linear-gradient(135deg, #0f766e, #14b8a6)',
+                          background: THEME_AVATAR_BG,
+                          border: `1px solid ${THEME_AVATAR_BORDER}`,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          color: '#fff',
+                          color: '#fffaf6',
                           fontSize: '13px',
                           fontWeight: 700,
                           flexShrink: 0,
@@ -589,7 +596,7 @@ export default function DoctorPage() {
                       </div>
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <p style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a' }}>
+                          <p style={{ fontSize: '14px', fontWeight: 600, color: '#1e1915' }}>
                             {row.patient.name}
                           </p>
                           {row.isEmergency && (
@@ -609,7 +616,7 @@ export default function DoctorPage() {
                             </span>
                           )}
                         </div>
-                        <p style={{ fontSize: '12px', color: '#94a3b8' }}>{row.patient.blood_group}</p>
+                        <p style={{ fontSize: '12px', color: '#9c8f84' }}>{row.patient.blood_group}</p>
                         {row.isEmergency && row.emergencyReason && (
                           <p
                             style={{
@@ -624,9 +631,9 @@ export default function DoctorPage() {
                         )}
                       </div>
                     </div>
-                    <p style={{ fontSize: '13px', color: '#475569' }}>+91 {row.patient.mobile_number}</p>
-                    <p style={{ fontSize: '13px', color: '#475569' }}>{getAge(row.patient.date_of_birth)} yrs</p>
-                    <p style={{ fontSize: '13px', color: '#475569' }}>{row.patient.gender}</p>
+                    <p style={{ fontSize: '13px', color: '#6f635b' }}>+91 {row.patient.mobile_number}</p>
+                    <p style={{ fontSize: '13px', color: '#6f635b' }}>{getAge(row.patient.date_of_birth)} yrs</p>
+                    <p style={{ fontSize: '13px', color: '#6f635b' }}>{row.patient.gender}</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                       <span
                         style={{
@@ -660,8 +667,8 @@ export default function DoctorPage() {
                         style={{
                           padding: '4px 10px',
                           borderRadius: '8px',
-                          background: records.length > 0 ? '#d1fae5' : '#f1f5f9',
-                          color: records.length > 0 ? '#065f46' : '#94a3b8',
+                          background: records.length > 0 ? '#d1fae5' : '#eee7df',
+                          color: records.length > 0 ? '#065f46' : '#9c8f84',
                           fontSize: '12px',
                           fontWeight: 600,
                         }}
@@ -681,12 +688,12 @@ export default function DoctorPage() {
                         style={{
                           fontSize: '11px',
                           fontWeight: 700,
-                          color: '#0f766e',
+                          color: '#f1662a',
                         }}
                       >
                         {actionLabel}
                       </span>
-                      <ArrowRight size={16} color="#94a3b8" />
+                      <ArrowRight size={16} color={THEME_ICON_MUTED} />
                     </div>
                   </Link>
                 </motion.div>
@@ -698,3 +705,6 @@ export default function DoctorPage() {
     </div>
   );
 }
+
+
+
