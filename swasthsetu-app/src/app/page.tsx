@@ -1,20 +1,92 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Heart, Stethoscope, ClipboardList, ArrowRight } from 'lucide-react';
+import { Heart, Stethoscope, ClipboardList, ArrowRight, X } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { persistRoleCookie, ROLE_HOME } from '@/lib/auth';
+import { doctors, getDoctorById } from '@/data/mock-data';
+import { DEMO_DOCTOR_PASSCODE_BY_ID } from '@/data/demo-doctor-passcodes';
 
 export default function LoginPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState<'reception' | 'doctor' | null>(null);
   const [hospitalCode, setHospitalCode] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [selectedDoctorId, setSelectedDoctorId] = useState('');
+  const [doctorPasscode, setDoctorPasscode] = useState('');
+  const [showDemoPasscodes, setShowDemoPasscodes] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
+  const departmentOptions = useMemo(
+    () =>
+      [...new Set(doctors.map((doctor) => doctor.specialty))].sort((a, b) =>
+        a.localeCompare(b, 'en-IN')
+      ),
+    []
+  );
+
+  const doctorOptions = useMemo(
+    () =>
+      doctors.filter((doctor) =>
+        selectedDepartment ? doctor.specialty === selectedDepartment : true
+      ),
+    [selectedDepartment]
+  );
+
+  const selectedDoctor = selectedDoctorId ? getDoctorById(selectedDoctorId) : null;
+  const demoPasscodeRows = useMemo(
+    () =>
+      doctors.map((doctor) => ({
+        ...doctor,
+        passcode: DEMO_DOCTOR_PASSCODE_BY_ID[doctor.id] ?? '----',
+      })),
+    []
+  );
+  const canSubmit =
+    selectedRole === 'doctor'
+      ? Boolean(selectedDepartment && selectedDoctorId && doctorPasscode.trim().length >= 4)
+      : Boolean(selectedRole);
+
+  const handleLogin = async () => {
     if (!selectedRole) return;
+    if (selectedRole === 'doctor' && !selectedDoctorId) return;
+
     setIsLoading(true);
+    if (selectedRole === 'doctor') {
+      try {
+        const response = await fetch('/api/auth/doctor-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            doctorId: selectedDoctorId,
+            department: selectedDepartment,
+            passcode: doctorPasscode,
+            hospitalCode,
+          }),
+        });
+
+        if (!response.ok) {
+          const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(payload?.error ?? 'Doctor login failed');
+        }
+
+        setTimeout(() => {
+          router.push(ROLE_HOME.doctor);
+        }, 400);
+        return;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Doctor authentication failed';
+        toast.error(message);
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    await fetch('/api/auth/doctor-logout', { method: 'POST' }).catch(() => null);
     persistRoleCookie(selectedRole);
     setTimeout(() => {
       router.push(ROLE_HOME[selectedRole]);
@@ -96,7 +168,11 @@ export default function LoginPage() {
               <div className="role-grid">
                 <button
                   suppressHydrationWarning
-                  onClick={() => setSelectedRole('reception')}
+                  onClick={() => {
+                    setSelectedRole('reception');
+                    setDoctorPasscode('');
+                    setShowDemoPasscodes(false);
+                  }}
                   className={`role-btn ${selectedRole === 'reception' ? 'is-active' : ''}`}
                 >
                   <span className="role-icon">
@@ -119,11 +195,82 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+            {selectedRole === 'doctor' && (
+              <div className="field">
+                <label>Doctor Login Details</label>
+                <div className="field-grid">
+                  <select
+                    suppressHydrationWarning
+                    value={selectedDepartment}
+                    onChange={(event) => {
+                      const nextDepartment = event.target.value;
+                      setSelectedDepartment(nextDepartment);
+
+                      const activeDoctor = getDoctorById(selectedDoctorId);
+                      if (!activeDoctor || activeDoctor.specialty !== nextDepartment) {
+                        setSelectedDoctorId('');
+                      }
+                    }}
+                  >
+                    <option value="">Select department</option>
+                    {departmentOptions.map((department) => (
+                      <option key={department} value={department}>
+                        {department}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    suppressHydrationWarning
+                    value={selectedDoctorId}
+                    onChange={(event) => setSelectedDoctorId(event.target.value)}
+                    disabled={!selectedDepartment}
+                  >
+                    <option value="">
+                      {selectedDepartment ? 'Select doctor' : 'Choose department first'}
+                    </option>
+                    {doctorOptions.map((doctor) => (
+                      <option key={doctor.id} value={doctor.id}>
+                        {doctor.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <p className="field-hint">
+                  {selectedDoctor
+                    ? `${selectedDoctor.name} - ${selectedDoctor.specialty} (${selectedDoctor.qualification})`
+                    : 'Doctor dashboard will open with this selected doctor profile.'}
+                </p>
+                <div style={{ marginTop: '10px' }}>
+                  <input
+                    suppressHydrationWarning
+                    type="password"
+                    inputMode="numeric"
+                    placeholder="Enter doctor access passcode"
+                    value={doctorPasscode}
+                    onChange={(event) => {
+                      const sanitized = event.target.value.replace(/\D/g, '').slice(0, 6);
+                      setDoctorPasscode(sanitized);
+                    }}
+                  />
+                </div>
+                <p className="field-hint">
+                  Access is protected. Contact hospital admin for your doctor passcode.
+                </p>
+                <button
+                  suppressHydrationWarning
+                  type="button"
+                  className="passcode-link-btn"
+                  onClick={() => setShowDemoPasscodes(true)}
+                >
+                  View Demo Passcodes (Prototype)
+                </button>
+              </div>
+            )}
 
             <button
               suppressHydrationWarning
               onClick={handleLogin}
-              disabled={!selectedRole || isLoading}
+              disabled={!canSubmit || isLoading}
               className="submit-btn"
             >
               {isLoading ? (
@@ -145,6 +292,58 @@ export default function LoginPage() {
           </div>
         </section>
       </motion.div>
+
+      {showDemoPasscodes && (
+        <div className="passcode-modal-overlay">
+          <div className="passcode-modal">
+            <div className="passcode-modal-head">
+              <div>
+                <p className="passcode-modal-title">Prototype Doctor Passcodes</p>
+                <p className="passcode-modal-subtitle">
+                  Use these only for demo login testing.
+                </p>
+              </div>
+              <button
+                suppressHydrationWarning
+                type="button"
+                className="passcode-close-btn"
+                onClick={() => setShowDemoPasscodes(false)}
+                aria-label="Close passcode popup"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="passcode-list">
+              {demoPasscodeRows.map((row) => (
+                <div key={row.id} className="passcode-row">
+                  <div>
+                    <p className="passcode-row-name">{row.name}</p>
+                    <p className="passcode-row-meta">{row.specialty}</p>
+                  </div>
+                  <div className="passcode-row-right">
+                    <code>{row.passcode}</code>
+                    <button
+                      suppressHydrationWarning
+                      type="button"
+                      className="passcode-use-btn"
+                      onClick={() => {
+                        setSelectedRole('doctor');
+                        setSelectedDepartment(row.specialty);
+                        setSelectedDoctorId(row.id);
+                        setDoctorPasscode(row.passcode);
+                        setShowDemoPasscodes(false);
+                        toast.success(`Loaded ${row.name} demo passcode`);
+                      }}
+                    >
+                      Use
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         .login-page {
@@ -325,6 +524,161 @@ export default function LoginPage() {
 
         .field input:focus {
           border-color: #f1662a;
+        }
+
+        .field select {
+          width: 100%;
+          border-radius: 14px;
+          border: 1.5px solid #d7cdc5;
+          background: #f5efea;
+          color: #1e1915;
+          font-size: 15px;
+          padding: 14px 16px;
+          outline: none;
+        }
+
+        .field select:focus {
+          border-color: #f1662a;
+        }
+
+        .field select:disabled {
+          color: #9c8f84;
+          background: #ece4dc;
+        }
+
+        .field-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .field-hint {
+          margin-top: 8px;
+          font-size: 12px;
+          color: #8b7d72;
+        }
+
+        .passcode-link-btn {
+          margin-top: 8px;
+          padding: 8px 12px;
+          border-radius: 10px;
+          border: 1px solid #ffd8c6;
+          background: #fff1e8;
+          color: #c14f20;
+          font-size: 12px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .passcode-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(17, 12, 9, 0.38);
+          display: grid;
+          place-items: center;
+          padding: 16px;
+          z-index: 120;
+        }
+
+        .passcode-modal {
+          width: 100%;
+          max-width: 560px;
+          border-radius: 20px;
+          border: 1px solid #e4d6cb;
+          background: #fbf7f3;
+          box-shadow: 0 22px 36px -22px rgba(53, 39, 24, 0.68);
+          padding: 16px;
+        }
+
+        .passcode-modal-head {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 10px;
+        }
+
+        .passcode-modal-title {
+          font-size: 16px;
+          font-weight: 800;
+          color: #1e1915;
+        }
+
+        .passcode-modal-subtitle {
+          font-size: 12px;
+          color: #7e7167;
+          margin-top: 2px;
+        }
+
+        .passcode-close-btn {
+          width: 30px;
+          height: 30px;
+          border-radius: 999px;
+          border: 1px solid #d7cdc5;
+          background: #f5efea;
+          color: #6f635b;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+        }
+
+        .passcode-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          max-height: 420px;
+          overflow: auto;
+          padding-right: 2px;
+        }
+
+        .passcode-row {
+          border-radius: 12px;
+          border: 1px solid #e9ddd3;
+          background: #f7f2ee;
+          padding: 10px 12px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+        }
+
+        .passcode-row-name {
+          font-size: 13px;
+          font-weight: 700;
+          color: #1e1915;
+        }
+
+        .passcode-row-meta {
+          font-size: 11px;
+          color: #7e7167;
+          margin-top: 2px;
+        }
+
+        .passcode-row-right {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .passcode-row-right code {
+          font-size: 13px;
+          font-weight: 800;
+          color: #b84b1f;
+          background: #fff1e8;
+          border: 1px solid #ffd8c6;
+          border-radius: 8px;
+          padding: 4px 8px;
+        }
+
+        .passcode-use-btn {
+          padding: 6px 9px;
+          border-radius: 8px;
+          border: 1px solid #d7cdc5;
+          background: #f5efea;
+          color: #5f544c;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
         }
 
         .role-grid {
@@ -559,6 +913,10 @@ export default function LoginPage() {
           }
 
           .role-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .field-grid {
             grid-template-columns: 1fr;
           }
         }

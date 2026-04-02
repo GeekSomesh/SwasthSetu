@@ -222,7 +222,8 @@ export function enqueuePatient(
       ? { doctorId: optionsOrDoctorId }
       : optionsOrDoctorId;
 
-  const doctorId = options.doctorId ?? DEFAULT_DOCTOR_ID;
+  const requestedDoctorId =
+    typeof options.doctorId === 'string' ? options.doctorId.trim() : '';
   const requestedEmergency = options.isEmergency;
   const emergencyReason = normalizeEmergencyReason(options.emergencyReason);
 
@@ -232,6 +233,7 @@ export function enqueuePatient(
     const queueWithoutPatient = store.queue.filter((item) => item.patientId !== patientId);
     const nextTokenNumber = existing ? existing.tokenNumber : store.lastTokenNumber + 1;
     const isEmergency = requestedEmergency ?? existing?.isEmergency ?? false;
+    const resolvedDoctorId = requestedDoctorId || existing?.doctorId || DEFAULT_DOCTOR_ID;
 
     const nextEntry: QueuePatientEntry = {
       patientId,
@@ -245,7 +247,7 @@ export function enqueuePatient(
       checkedInAt: timestamp,
       diagnosisStartedAt: null,
       updatedAt: timestamp,
-      doctorId: existing?.doctorId ?? doctorId,
+      doctorId: resolvedDoctorId,
     };
 
     return {
@@ -294,22 +296,35 @@ export function markPatientUnderDiagnosis(patientId: string, doctorId = DEFAULT_
     const timestamp = nowIso();
     const target = store.queue.find((item) => item.patientId === patientId);
     if (!target) return store;
+    if (doctorId && target.doctorId && target.doctorId !== doctorId) return store;
     if (target.status === 'UnderDiagnosis') return store;
+    const effectiveDoctorId = target.doctorId || doctorId || DEFAULT_DOCTOR_ID;
 
     const activeConsultation = store.queue.find(
-      (item) => item.status === 'UnderDiagnosis' && item.patientId !== patientId
+      (item) =>
+        item.status === 'UnderDiagnosis' &&
+        item.patientId !== patientId &&
+        (item.doctorId || DEFAULT_DOCTOR_ID) === effectiveDoctorId
     );
     if (activeConsultation) return store;
 
     if (target.status === 'Waiting') {
       if (!target.isEmergency) {
         const emergencyWaitingCount = store.queue.filter(
-          (item) => item.status === 'Waiting' && item.isEmergency
+          (item) =>
+            item.status === 'Waiting' &&
+            item.isEmergency &&
+            (item.doctorId || DEFAULT_DOCTOR_ID) === effectiveDoctorId
         ).length;
         if (emergencyWaitingCount > 0) return store;
 
         const nextNonEmergencyByFifo = [...store.queue]
-          .filter((item) => item.status === 'Waiting' && !item.isEmergency)
+          .filter(
+            (item) =>
+              item.status === 'Waiting' &&
+              !item.isEmergency &&
+              (item.doctorId || DEFAULT_DOCTOR_ID) === effectiveDoctorId
+          )
           .sort((a, b) => {
             const aTime = Date.parse(a.checkedInAt);
             const bTime = Date.parse(b.checkedInAt);
@@ -332,7 +347,7 @@ export function markPatientUnderDiagnosis(patientId: string, doctorId = DEFAULT_
         ...item,
         status: 'UnderDiagnosis' as QueueStatus,
         diagnosisStartedAt: item.diagnosisStartedAt ?? timestamp,
-        doctorId: doctorId || item.doctorId,
+        doctorId: item.doctorId || effectiveDoctorId,
         updatedAt: timestamp,
       };
     });
@@ -349,6 +364,7 @@ export function markPatientDiagnosed(patientId: string, doctorId = DEFAULT_DOCTO
   updateStore((store) => {
     const queueEntry = store.queue.find((item) => item.patientId === patientId);
     if (!queueEntry) return store;
+    if (doctorId && queueEntry.doctorId && queueEntry.doctorId !== doctorId) return store;
 
     changed = true;
     const completedAt = nowIso();
@@ -365,7 +381,7 @@ export function markPatientDiagnosed(patientId: string, doctorId = DEFAULT_DOCTO
           checkedInAt: queueEntry.checkedInAt,
           diagnosisStartedAt: queueEntry.diagnosisStartedAt,
           completedAt,
-          doctorId: queueEntry.doctorId || doctorId,
+          doctorId: queueEntry.doctorId || doctorId || DEFAULT_DOCTOR_ID,
         },
       ],
       lastTokenNumber: Math.max(store.lastTokenNumber, queueEntry.tokenNumber),

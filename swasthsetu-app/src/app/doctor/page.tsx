@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Users, Clock, FileText, Activity, ArrowRight, Stethoscope, AlertTriangle } from 'lucide-react';
-import { getAge, getPatientById, getRecordsByPatientId, patients, type Patient } from '@/data/mock-data';
+import {
+  doctors,
+  getAge,
+  getDoctorById,
+  getPatientById,
+  getRecordsByPatientId,
+  patients,
+  type Patient,
+} from '@/data/mock-data';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
@@ -11,6 +19,7 @@ import {
   subscribeToPatientQueue,
   type QueueStatus,
 } from '@/lib/patient-queue';
+import { getDoctorCookie } from '@/lib/auth';
 
 type DoctorStat =
   | 'Patients Today'
@@ -80,6 +89,12 @@ export default function DoctorPage() {
   const [activeStat, setActiveStat] = useState<DoctorStat>('Pending Review');
   const [actionMessage, setActionMessage] = useState('Showing patients pending review.');
   const [queueStore, setQueueStore] = useState(() => getPatientQueueStore());
+  const [clockTs, setClockTs] = useState(() => Date.now());
+  const cookieDoctorId = getDoctorCookie();
+  const fallbackDoctorId = doctors[0]?.id ?? 'doc-001';
+  const activeDoctorId =
+    cookieDoctorId && getDoctorById(cookieDoctorId) ? cookieDoctorId : fallbackDoctorId;
+  const activeDoctor = getDoctorById(activeDoctorId);
 
   useEffect(() => {
     const unsubscribe = subscribeToPatientQueue((nextStore) => {
@@ -88,7 +103,14 @@ export default function DoctorPage() {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    const timer = window.setInterval(() => setClockTs(Date.now()), 60000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   const queueRows = queueStore.queue.reduce<DashboardPatientRow[]>((acc, entry) => {
+    if (entry.doctorId !== activeDoctorId) return acc;
+
     const patient = getPatientById(entry.patientId);
     if (!patient) return acc;
     acc.push({
@@ -104,6 +126,8 @@ export default function DoctorPage() {
   const completedRows = [...queueStore.completed]
     .reverse()
     .reduce<DashboardPatientRow[]>((acc, entry) => {
+      if (entry.doctorId !== activeDoctorId) return acc;
+
       const patient = getPatientById(entry.patientId);
       if (!patient) return acc;
       acc.push({
@@ -161,16 +185,22 @@ export default function DoctorPage() {
     completedRows.map((row) => [row.patient.id, row] as const)
   );
 
-  const allRegisteredRows: DashboardPatientRow[] = patients.map((patient) => {
-    const queueRow = queueStatusByPatientId.get(patient.id);
-    if (queueRow) return queueRow;
-    const completedRow = completedStatusByPatientId.get(patient.id);
-    if (completedRow) return completedRow;
-    return {
-      patient,
-      status: 'Historical',
-    };
-  });
+  const allRegisteredRows: DashboardPatientRow[] = patients
+    .filter((patient) => {
+      if (queueStatusByPatientId.has(patient.id)) return true;
+      if (completedStatusByPatientId.has(patient.id)) return true;
+      return getRecordsByPatientId(patient.id).some((record) => record.doctor_id === activeDoctorId);
+    })
+    .map((patient) => {
+      const queueRow = queueStatusByPatientId.get(patient.id);
+      if (queueRow) return queueRow;
+      const completedRow = completedStatusByPatientId.get(patient.id);
+      if (completedRow) return completedRow;
+      return {
+        patient,
+        status: 'Historical',
+      };
+    });
 
   const stats = [
     {
@@ -228,7 +258,21 @@ export default function DoctorPage() {
   const listSubtitle =
     activeStat === 'All Registered'
       ? 'Full patient registry view for historical review and fresh prescriptions.'
-      : 'Click on a patient to open timeline and continue consultation';
+      : `${activeDoctor?.name ?? 'Selected doctor'} queue. Click a patient to continue consultation.`;
+
+  const currentHour = new Date(clockTs).getHours();
+  const greetingPrefix =
+    currentHour < 12
+      ? 'Good Morning'
+      : currentHour < 17
+        ? 'Good Afternoon'
+        : currentHour < 21
+          ? 'Good Evening'
+          : 'Good Night';
+  const greetingTitle = `${greetingPrefix}, ${activeDoctor?.name ?? 'Doctor'}`;
+  const greetingSubtitle = activeDoctor
+    ? `${activeDoctor.specialty} - Ready for consultations`
+    : `Doctor ID: ${activeDoctorId}`;
 
   const patientList = rowsForDisplay
     .filter((row) => bySearchTerm(row, searchTerm))
@@ -253,6 +297,24 @@ export default function DoctorPage() {
 
   return (
     <div>
+      <div
+        style={{
+          marginBottom: '18px',
+          padding: '16px 18px',
+          borderRadius: '16px',
+          border: '1px solid #ffd8c6',
+          background:
+            'linear-gradient(135deg, rgba(255, 239, 228, 0.95) 0%, rgba(255, 244, 236, 0.96) 100%)',
+        }}
+      >
+        <p style={{ fontSize: '30px', color: '#1e1915', fontWeight: 800, letterSpacing: '-0.02em' }}>
+          {greetingTitle}
+        </p>
+        <p style={{ fontSize: '13px', color: '#7a6556', marginTop: '4px', fontWeight: 600 }}>
+          {greetingSubtitle}
+        </p>
+      </div>
+
       {/* Stats */}
       <div
         style={{
@@ -495,8 +557,8 @@ export default function DoctorPage() {
                     : 'Open';
               const timelineHref =
                 row.status === 'Historical'
-                  ? `/doctor/patient/${row.patient.id}?newVisit=1`
-                  : `/doctor/patient/${row.patient.id}`;
+                  ? `/doctor/patient/${row.patient.id}?newVisit=1&doctorId=${encodeURIComponent(activeDoctorId)}`
+                  : `/doctor/patient/${row.patient.id}?doctorId=${encodeURIComponent(activeDoctorId)}`;
               return (
                 <motion.div
                   key={`${row.patient.id}-${row.completedAt ?? row.checkedInAt ?? i}`}
@@ -539,11 +601,11 @@ export default function DoctorPage() {
                           return;
                         }
 
-                        const moved = markPatientUnderDiagnosis(row.patient.id);
+                        const moved = markPatientUnderDiagnosis(row.patient.id, activeDoctorId);
                         if (!moved) {
                           event.preventDefault();
                           setActionMessage(
-                            'Could not move patient to consultation. Check queue order and active consultation lock.'
+                            'Could not move patient to consultation. Check assignment, queue order, and active consultation lock.'
                           );
                           return;
                         }

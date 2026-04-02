@@ -5,9 +5,11 @@ import { Search, Phone, UserCheck, Clock, ArrowRight, Shield, Users, FileText, A
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
+  doctors,
   getPatientById,
   getAge,
   generateOTP,
+  getDoctorById,
   facilities,
   type Patient,
 } from '@/data/mock-data';
@@ -25,6 +27,9 @@ type ReceptionQueueRow = {
   patient: Patient;
   status: QueueStatus;
   tokenNumber: number;
+  doctorId: string;
+  doctorName: string;
+  department: string;
   isEmergency: boolean;
   emergencyReason: string | null;
   checkedInAt: string;
@@ -43,7 +48,6 @@ type PendingConsentEntry = {
 
 type QueuePriorityMode = 'default' | 'long-wait' | 'elderly';
 
-const PENDING_CONSENT_STORAGE_KEY = 'swasthsetu-pending-consents-v2';
 const THEME_AVATAR_BG = 'linear-gradient(145deg, #f1662a, #e7672f)';
 const THEME_PRIMARY_BUTTON_BG = '#f1662a';
 const THEME_PRIMARY_BUTTON_BORDER = '#dc5c24';
@@ -69,31 +73,11 @@ export default function ReceptionPage() {
   const [isSearching, setIsSearching] = useState(false);
   const [activeStat, setActiveStat] = useState<ReceptionStat>('In Queue');
   const [queuePriorityMode, setQueuePriorityMode] = useState<QueuePriorityMode>('default');
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const [selectedDoctorId, setSelectedDoctorId] = useState('');
   const [nowTs, setNowTs] = useState(() => new Date().getTime());
   const [queueStore, setQueueStore] = useState(() => getPatientQueueStore());
-  const [pendingConsents, setPendingConsents] = useState<PendingConsentEntry[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const raw = window.localStorage.getItem(PENDING_CONSENT_STORAGE_KEY);
-    if (!raw) return [];
-    try {
-      const parsed: unknown = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return [];
-      return parsed.filter((entry): entry is PendingConsentEntry => {
-        if (!entry || typeof entry !== 'object') return false;
-        const item = entry as Partial<PendingConsentEntry>;
-        return (
-          typeof item.patientId === 'string' &&
-          typeof item.patientName === 'string' &&
-          typeof item.mobile === 'string' &&
-          typeof item.otp === 'string' &&
-          typeof item.requestedAt === 'string' &&
-          typeof item.attempts === 'number'
-        );
-      });
-    } catch {
-      return [];
-    }
-  });
+  const [pendingConsents, setPendingConsents] = useState<PendingConsentEntry[]>([]);
 
   useEffect(() => {
     const unsubscribe = subscribeToPatientQueue((nextStore) => {
@@ -101,14 +85,6 @@ export default function ReceptionPage() {
     });
     return unsubscribe;
   }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    window.localStorage.setItem(
-      PENDING_CONSENT_STORAGE_KEY,
-      JSON.stringify(pendingConsents)
-    );
-  }, [pendingConsents]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -170,10 +146,17 @@ export default function ReceptionPage() {
     .map((entry) => {
       const patient = getPatientById(entry.patientId);
       if (!patient) return null;
+      const assignedDoctor = getDoctorById(entry.doctorId);
+      const fallbackDoctorName = `Doctor ${entry.doctorId}`;
+      const fallbackDepartment = 'General Medicine';
+
       return {
         patient,
         status: entry.status,
         tokenNumber: entry.tokenNumber,
+        doctorId: entry.doctorId,
+        doctorName: assignedDoctor?.name ?? fallbackDoctorName,
+        department: assignedDoctor?.specialty ?? fallbackDepartment,
         isEmergency: entry.isEmergency,
         emergencyReason: entry.emergencyReason,
         checkedInAt: entry.checkedInAt,
@@ -217,6 +200,8 @@ export default function ReceptionPage() {
       if (!response.ok) {
         setFoundPatient(null);
         setSearchDone(true);
+        setSelectedDepartment('');
+        setSelectedDoctorId('');
         const payload = (await response.json().catch(() => null)) as { error?: string } | null;
         toast.error(payload?.error ?? 'No patient found with this mobile number');
         return;
@@ -228,8 +213,23 @@ export default function ReceptionPage() {
       setSearchDone(true);
 
       if (!patient) {
+        setSelectedDepartment('');
+        setSelectedDoctorId('');
         toast.error('No patient found with this mobile number');
         return;
+      }
+
+      const existingQueueEntry = queueStore.queue.find((entry) => entry.patientId === patient.id);
+      const existingAssignedDoctor = existingQueueEntry
+        ? getDoctorById(existingQueueEntry.doctorId)
+        : null;
+
+      if (existingAssignedDoctor) {
+        setSelectedDepartment(existingAssignedDoctor.specialty);
+        setSelectedDoctorId(existingAssignedDoctor.id);
+      } else {
+        setSelectedDepartment('');
+        setSelectedDoctorId('');
       }
 
       const pendingConsent = pendingConsents.find((entry) => entry.patientId === patient.id);
@@ -245,6 +245,8 @@ export default function ReceptionPage() {
       console.error('Failed to search patient by mobile.', error);
       setFoundPatient(null);
       setSearchDone(true);
+      setSelectedDepartment('');
+      setSelectedDoctorId('');
       toast.error('Unable to search patient right now.');
     } finally {
       setIsSearching(false);
@@ -343,6 +345,16 @@ export default function ReceptionPage() {
       return;
     }
 
+    if (!selectedDepartment) {
+      toast.error('Select a department before handover');
+      return;
+    }
+
+    if (!selectedDoctorId) {
+      toast.error('Select assigned doctor before handover');
+      return;
+    }
+
     try {
       const response = await fetch('/api/consent/verify', {
         method: 'POST',
@@ -370,6 +382,7 @@ export default function ReceptionPage() {
         prev.filter((entry) => entry.patientId !== foundPatient.id)
       );
       const nextStore = enqueuePatient(foundPatient.id, {
+        doctorId: selectedDoctorId,
         isEmergency: isEmergencyCase,
         emergencyReason: emergencyReason.trim() || null,
       });
@@ -392,6 +405,22 @@ export default function ReceptionPage() {
   const foundPatientQueueEntry = foundPatient
     ? queuedPatients.find((row) => row.patient.id === foundPatient.id)
     : undefined;
+
+  const departmentOptions = useMemo(
+    () =>
+      [...new Set(doctors.map((doctor) => doctor.specialty))].sort((a, b) =>
+        a.localeCompare(b, 'en-IN')
+      ),
+    []
+  );
+
+  const doctorsForSelectedDepartment = useMemo(
+    () =>
+      doctors.filter((doctor) =>
+        selectedDepartment ? doctor.specialty === selectedDepartment : true
+      ),
+    [selectedDepartment]
+  );
 
   const completedTodayCount = queueStore.completed.length;
   const patientsTodayCount = queuedPatients.length + completedTodayCount;
@@ -514,7 +543,7 @@ export default function ReceptionPage() {
       return;
     }
 
-    const didMove = markPatientUnderDiagnosis(nextWaiting.patient.id);
+    const didMove = markPatientUnderDiagnosis(nextWaiting.patient.id, nextWaiting.doctorId);
     if (didMove) {
       setQueueStore(getPatientQueueStore());
       toast.success(
@@ -900,6 +929,9 @@ export default function ReceptionPage() {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
+                    </p>
+                    <p style={{ fontSize: '11px', color: '#8f8279' }}>
+                      Assigned: {row.department} - {row.doctorName}
                     </p>
                   </div>
                   <div>
@@ -1394,6 +1426,88 @@ export default function ReceptionPage() {
                   </div>
                 )}
 
+                <div
+                  style={{
+                    padding: '14px',
+                    borderRadius: '14px',
+                    background: '#f5efea',
+                    border: '1px solid #d7cdc5',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: '13px',
+                      fontWeight: 700,
+                      color: '#1e1915',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    Doctor Assignment
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <select
+                      suppressHydrationWarning
+                      value={selectedDepartment}
+                      onChange={(event) => {
+                        const nextDepartment = event.target.value;
+                        setSelectedDepartment(nextDepartment);
+                        const activeDoctor = getDoctorById(selectedDoctorId);
+                        if (!activeDoctor || activeDoctor.specialty !== nextDepartment) {
+                          setSelectedDoctorId('');
+                        }
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        border: '1px solid #d7cdc5',
+                        fontSize: '12px',
+                        color: '#1e1915',
+                        background: '#f7f2ee',
+                      }}
+                    >
+                      <option value="">Select department</option>
+                      {departmentOptions.map((department) => (
+                        <option key={department} value={department}>
+                          {department}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      suppressHydrationWarning
+                      value={selectedDoctorId}
+                      onChange={(event) => setSelectedDoctorId(event.target.value)}
+                      disabled={!selectedDepartment}
+                      style={{
+                        width: '100%',
+                        padding: '10px 12px',
+                        borderRadius: '10px',
+                        border: '1px solid #d7cdc5',
+                        fontSize: '12px',
+                        color: !selectedDepartment ? '#9c8f84' : '#1e1915',
+                        background: !selectedDepartment ? '#ece4dc' : '#f7f2ee',
+                      }}
+                    >
+                      <option value="">
+                        {selectedDepartment ? 'Select doctor' : 'Choose department first'}
+                      </option>
+                      {doctorsForSelectedDepartment.map((doctor) => (
+                        <option key={doctor.id} value={doctor.id}>
+                          {doctor.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <p style={{ marginTop: '8px', fontSize: '11px', color: '#8f8279' }}>
+                    {selectedDoctorId
+                      ? `Assigned to ${getDoctorById(selectedDoctorId)?.name ?? 'selected doctor'} (${
+                          getDoctorById(selectedDoctorId)?.specialty ?? 'Department'
+                        })`
+                      : 'Select department and doctor before OTP handover.'}
+                  </p>
+                </div>
+
                 {/* Action Buttons */}
                 {!consentGranted ? (
                   !showOTP ? (
@@ -1679,6 +1793,9 @@ export default function ReceptionPage() {
                     <p style={{ fontSize: '12px', color: '#6f635b' }}>
                       {q.patient.gender} -{' '}
                       {getAge(q.patient.date_of_birth)} yrs
+                    </p>
+                    <p style={{ fontSize: '11px', color: '#8f8279' }}>
+                      {q.department} - {q.doctorName}
                     </p>
                     <p style={{ fontSize: '11px', color: '#9c8f84', marginTop: '2px' }}>
                       {formatToken(q.tokenNumber)} - Waiting: {getWaitingMinutes(q.checkedInAt)} min

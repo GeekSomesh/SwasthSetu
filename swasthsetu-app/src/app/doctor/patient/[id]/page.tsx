@@ -38,6 +38,7 @@ import {
   subscribeToPatientQueue,
   type QueueStatus,
 } from '@/lib/patient-queue';
+import { getDoctorCookie } from '@/lib/auth';
 
 const recordTypeConfig: Record<
   RecordType,
@@ -175,6 +176,16 @@ export default function PatientTimelinePage() {
     followUp: '',
   });
   const [queueStore, setQueueStore] = useState(() => getPatientQueueStore());
+  const queryDoctorId = searchParams.get('doctorId');
+  const cookieDoctorId = getDoctorCookie();
+  const fallbackDoctorId = 'doc-001';
+  const activeDoctorId =
+    queryDoctorId && getDoctorById(queryDoctorId)
+      ? queryDoctorId
+      : cookieDoctorId && getDoctorById(cookieDoctorId)
+        ? cookieDoctorId
+        : fallbackDoctorId;
+  const activeDoctor = getDoctorById(activeDoctorId);
 
   useEffect(() => {
     const unsubscribe = subscribeToPatientQueue((nextStore) => {
@@ -184,8 +195,8 @@ export default function PatientTimelinePage() {
   }, []);
 
   useEffect(() => {
-    markPatientUnderDiagnosis(patientId);
-  }, [patientId]);
+    markPatientUnderDiagnosis(patientId, activeDoctorId);
+  }, [activeDoctorId, patientId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -218,7 +229,10 @@ export default function PatientTimelinePage() {
     return (
       <div style={{ padding: '64px', textAlign: 'center' }}>
         <p style={{ fontSize: '18px', color: '#6f635b' }}>Patient not found</p>
-        <Link href="/doctor" style={{ color: THEME_ICON_ACCENT, marginTop: '16px', display: 'inline-block' }}>
+        <Link
+          href={`/doctor?doctorId=${encodeURIComponent(activeDoctorId)}`}
+          style={{ color: THEME_ICON_ACCENT, marginTop: '16px', display: 'inline-block' }}
+        >
           Back to Dashboard
         </Link>
       </div>
@@ -239,15 +253,17 @@ export default function PatientTimelinePage() {
   ];
 
   const queueEntry = queueStore.queue.find((entry) => entry.patientId === patientId);
-  const queueStatus = queueEntry?.status ?? null;
+  const isAssignedToAnotherDoctor =
+    Boolean(queueEntry?.doctorId) && queueEntry?.doctorId !== activeDoctorId;
+  const queueStatus = isAssignedToAnotherDoctor ? null : queueEntry?.status ?? null;
   const selectedTemplate =
     prescriptionTemplates.find((template) => template.id === selectedTemplateId) ?? null;
 
   const handleMarkDiagnosed = () => {
-    const marked = markPatientDiagnosed(patientId);
+    const marked = markPatientDiagnosed(patientId, activeDoctorId);
     if (!marked) {
       toast.info('Patient is not in active queue.', {
-        description: 'Only queued patients can be marked diagnosed.',
+        description: 'Only patients assigned to your queue can be marked diagnosed.',
       });
       return;
     }
@@ -305,8 +321,8 @@ export default function PatientTimelinePage() {
         },
         body: JSON.stringify({
           patientId: patient?.id ?? patientId,
-          facilityId: getDoctorById('doc-001')?.facility_id ?? 'fac-001',
-          doctorId: getDoctorById('doc-001')?.id ?? 'doc-001',
+          facilityId: activeDoctor?.facility_id ?? 'fac-001',
+          doctorId: activeDoctor?.id ?? activeDoctorId,
           recordType: 'Prescription',
           title: selectedTemplate
             ? `${selectedTemplate.label} - ${new Date().toLocaleDateString('en-IN')}`
@@ -346,7 +362,7 @@ export default function PatientTimelinePage() {
       {/* Back Button + Patient Header */}
       <div style={{ marginBottom: '24px' }}>
         <Link
-          href="/doctor"
+          href={`/doctor?doctorId=${encodeURIComponent(activeDoctorId)}`}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -415,21 +431,38 @@ export default function PatientTimelinePage() {
                 {queueStatusConfig[queueStatus].label}
               </span>
             )}
+            {isAssignedToAnotherDoctor && (
+              <span
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  background: '#fee2e2',
+                  color: '#991b1b',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                }}
+              >
+                Assigned to another doctor
+              </span>
+            )}
             <button suppressHydrationWarning
               onClick={handleMarkDiagnosed}
-              disabled={!queueStatus}
+              disabled={!queueStatus || isAssignedToAnotherDoctor}
               style={{
                 padding: '12px 18px',
                 borderRadius: '12px',
                 border: 'none',
-                background: queueStatus ? THEME_PRIMARY_GRADIENT : '#e2e8f0',
-                color: queueStatus ? '#ffffff' : '#9c8f84',
+                background: queueStatus && !isAssignedToAnotherDoctor ? THEME_PRIMARY_GRADIENT : '#e2e8f0',
+                color: queueStatus && !isAssignedToAnotherDoctor ? '#ffffff' : '#9c8f84',
                 fontSize: '13px',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: queueStatus ? '0 12px 24px -18px rgba(220, 92, 36, 0.82)' : 'none',
+                boxShadow:
+                  queueStatus && !isAssignedToAnotherDoctor
+                    ? '0 12px 24px -18px rgba(220, 92, 36, 0.82)'
+                    : 'none',
               }}
             >
               <Activity size={16} />
