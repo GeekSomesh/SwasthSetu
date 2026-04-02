@@ -2,8 +2,7 @@
 
 ## 1. Project Summary
 
-SwasthSetu AI is a role-based clinical workflow application for **reception desks** and **doctors**.  
-It demonstrates how patient discovery, consent capture, queue triage, consultation, and visit-note continuity can be handled in a single system.
+SwasthSetu is a role-based clinical workflow application designed for both reception staff and doctors. It streamlines the entire patient journey—from discovery and consent capture to queue triage, consultation, and seamless visit-note continuity—within a single, unified system.
 
 The project is implemented as a Next.js App Router application with:
 
