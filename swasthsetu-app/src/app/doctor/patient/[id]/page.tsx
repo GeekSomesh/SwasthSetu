@@ -97,66 +97,6 @@ const THEME_ICON_SOFT_BORDER = '#ffe7da';
 const THEME_PRIMARY_GRADIENT = 'linear-gradient(145deg, #f1662a, #dc5c24)';
 const THEME_AVATAR_GRADIENT = 'linear-gradient(145deg, #f1662a, #e7672f)';
 
-type PrescriptionTemplate = {
-  id: string;
-  label: string;
-  diagnosis: string;
-  medications: string[];
-  notes: string;
-  followUpDays: number;
-};
-
-const prescriptionTemplates: PrescriptionTemplate[] = [
-  {
-    id: 'viral-fever',
-    label: 'Viral Fever',
-    diagnosis: 'Acute Viral Febrile Illness',
-    medications: [
-      'Paracetamol 650mg SOS for fever',
-      'Cetirizine 10mg at bedtime for 3 days',
-      'ORS 200ml after each loose stool',
-    ],
-    notes: 'Hydration advised. Red-flag symptoms explained: persistent fever >3 days, breathlessness, vomiting.',
-    followUpDays: 3,
-  },
-  {
-    id: 'hypertension-followup',
-    label: 'Hypertension Follow-up',
-    diagnosis: 'Essential Hypertension - Follow-up',
-    medications: [
-      'Amlodipine 5mg once daily',
-      'Telmisartan 40mg once daily',
-      'Low-salt diet and 30 min walk daily',
-    ],
-    notes: 'BP charting advised twice daily for 7 days. Avoid excess salt and OTC painkillers.',
-    followUpDays: 14,
-  },
-  {
-    id: 'diabetes-followup',
-    label: 'Diabetes Follow-up',
-    diagnosis: 'Type 2 Diabetes Mellitus - Routine Review',
-    medications: [
-      'Metformin 500mg twice daily after meals',
-      'Glimepiride 1mg once daily before breakfast',
-      'Foot care and daily glucose monitoring',
-    ],
-    notes: 'Diet counseling provided. Watch for hypoglycemia signs and maintain sugar logbook.',
-    followUpDays: 15,
-  },
-  {
-    id: 'gastritis-acidity',
-    label: 'Gastritis / Acidity',
-    diagnosis: 'Acid Peptic Disease / Gastritis',
-    medications: [
-      'Pantoprazole 40mg once daily before breakfast',
-      'Antacid syrup 10ml TDS after meals',
-      'Domperidone 10mg SOS for nausea',
-    ],
-    notes: 'Avoid spicy/oily food, tea/coffee excess, and late-night meals.',
-    followUpDays: 7,
-  },
-];
-
 export default function PatientTimelinePage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -168,7 +108,6 @@ export default function PatientTimelinePage() {
   const [activeFilter, setActiveFilter] = useState<RecordType | 'All'>('All');
   const [selectedRecord, setSelectedRecord] = useState<MedicalRecord | null>(null);
   const [showNewVisit, setShowNewVisit] = useState(startInNewVisitMode);
-  const [selectedTemplateId, setSelectedTemplateId] = useState('');
   const [newVisitData, setNewVisitData] = useState({
     diagnosis: '',
     medications: '',
@@ -256,8 +195,6 @@ export default function PatientTimelinePage() {
   const isAssignedToAnotherDoctor =
     Boolean(queueEntry?.doctorId) && queueEntry?.doctorId !== activeDoctorId;
   const queueStatus = isAssignedToAnotherDoctor ? null : queueEntry?.status ?? null;
-  const selectedTemplate =
-    prescriptionTemplates.find((template) => template.id === selectedTemplateId) ?? null;
 
   const handleMarkDiagnosed = () => {
     const marked = markPatientDiagnosed(patientId, activeDoctorId);
@@ -271,39 +208,6 @@ export default function PatientTimelinePage() {
     setQueueStore(getPatientQueueStore());
     toast.success('Patient marked diagnosed', {
       description: 'Consultation is now counted under "Consultations Done".',
-    });
-  };
-
-  const buildFollowUpDate = (daysFromNow: number): string => {
-    const next = new Date();
-    next.setDate(next.getDate() + daysFromNow);
-    return next.toISOString().slice(0, 10);
-  };
-
-  const handleApplyTemplate = () => {
-    if (!selectedTemplate) {
-      toast.info('Select a prescription template first.');
-      return;
-    }
-
-    setNewVisitData((prev) => ({
-      ...prev,
-      diagnosis: selectedTemplate.diagnosis,
-      medications: selectedTemplate.medications.join('\n'),
-      notes: selectedTemplate.notes,
-      followUp: buildFollowUpDate(selectedTemplate.followUpDays),
-    }));
-
-    toast.success(`Applied template: ${selectedTemplate.label}`);
-  };
-
-  const handleClearTemplate = () => {
-    setSelectedTemplateId('');
-    setNewVisitData({
-      diagnosis: '',
-      medications: '',
-      notes: '',
-      followUp: '',
     });
   };
 
@@ -324,9 +228,7 @@ export default function PatientTimelinePage() {
           facilityId: activeDoctor?.facility_id ?? 'fac-001',
           doctorId: activeDoctor?.id ?? activeDoctorId,
           recordType: 'Prescription',
-          title: selectedTemplate
-            ? `${selectedTemplate.label} - ${new Date().toLocaleDateString('en-IN')}`
-            : `Visit Note - ${new Date().toLocaleDateString('en-IN')}`,
+          title: `Visit Note - ${new Date().toLocaleDateString('en-IN')}`,
           notes: newVisitData.notes || 'Clinical notes recorded.',
           diagnosis: newVisitData.diagnosis || 'N/A',
           medications: parsedMedications.length > 0 ? parsedMedications : ['No medications entered.'],
@@ -349,7 +251,6 @@ export default function PatientTimelinePage() {
       });
 
       setShowNewVisit(false);
-      setSelectedTemplateId('');
       setNewVisitData({ diagnosis: '', medications: '', notes: '', followUp: '' });
     } catch (error) {
       console.error('Failed to upload visit note.', error);
@@ -550,7 +451,6 @@ export default function PatientTimelinePage() {
                 transition: 'all 0.2s ease',
               }}
             >
-              {config && <span>{config.emoji}</span>}
               {filter === 'All' ? 'All Records' : config?.label}
               <span
                 style={{
@@ -1202,80 +1102,6 @@ export default function PatientTimelinePage() {
 
               {/* Form */}
               <div style={{ padding: '24px 28px' }}>
-                <div
-                  style={{
-                    marginBottom: '20px',
-                    padding: '14px',
-                    borderRadius: '14px',
-                    background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
-                  }}
-                >
-                  <label
-                    style={{
-                      display: 'block',
-                      fontSize: '13px',
-                      fontWeight: 600,
-                      color: '#6f635b',
-                      marginBottom: '8px',
-                    }}
-                  >
-                    Structured Prescription Template
-                  </label>
-                  <select
-                    value={selectedTemplateId}
-                    onChange={(e) => setSelectedTemplateId(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      border: '1.5px solid #e2e8f0',
-                      fontSize: '14px',
-                      color: '#0f172a',
-                      background: '#ffffff',
-                    }}
-                  >
-                    <option value="">Select a template...</option>
-                    {prescriptionTemplates.map((template) => (
-                      <option key={template.id} value={template.id}>
-                        {template.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    <button suppressHydrationWarning
-                      type="button"
-                      onClick={handleApplyTemplate}
-                      style={{
-                        padding: '10px 12px',
-                        borderRadius: '10px',
-                        border: `1px solid ${THEME_ICON_SOFT_BORDER}`,
-                        background: THEME_ICON_SOFT_BG,
-                        color: '#f1662a',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                      }}
-                    >
-                      Apply Template
-                    </button>
-                    <button suppressHydrationWarning
-                      type="button"
-                      onClick={handleClearTemplate}
-                      style={{
-                        padding: '10px 12px',
-                        borderRadius: '10px',
-                        border: '1px solid #e2e8f0',
-                        background: '#ffffff',
-                        color: '#6f635b',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                      }}
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-
                 <div style={{ marginBottom: '20px' }}>
                   <label
                     style={{
