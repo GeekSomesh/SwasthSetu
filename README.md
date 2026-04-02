@@ -274,8 +274,6 @@ This section lists every file in the repository workspace excluding `.git`, `.ne
 | `swasthsetu-app/.env.example` | Environment-variable template for Mongo configuration. |
 | `swasthsetu-app/.env.local` | Local environment values used by this machine (not intended for commit). |
 | `swasthsetu-app/.gitignore` | Ignore rules for build output, env files, logs, and dependencies. |
-| `swasthsetu-app/AGENTS.md` | AI coding assistant instruction file; not part of runtime logic. |
-| `swasthsetu-app/CLAUDE.md` | AI tool directive file; not part of runtime logic. |
 | `swasthsetu-app/dev-clean.err.log` | Development stderr log artifact from local runs. |
 | `swasthsetu-app/dev-clean.log` | Development stdout log artifact from local runs. |
 | `swasthsetu-app/eslint.config.mjs` | ESLint configuration using Next.js core-web-vitals and TypeScript presets. |
@@ -284,7 +282,6 @@ This section lists every file in the repository workspace excluding `.git`, `.ne
 | `swasthsetu-app/package-lock.json` | Dependency lockfile for deterministic npm installs. |
 | `swasthsetu-app/package.json` | Scripts, dependencies, and metadata for the app package. |
 | `swasthsetu-app/postcss.config.mjs` | PostCSS plugin registration (`@tailwindcss/postcss`). |
-| `swasthsetu-app/README.md` | App-level pointer that directs readers to the canonical root README. |
 | `swasthsetu-app/Screenshot 2026-04-03 003831.png` | Original screenshot capture (login screen). |
 | `swasthsetu-app/Screenshot 2026-04-03 003919.png` | Original screenshot capture (doctor dashboard). |
 | `swasthsetu-app/Screenshot 2026-04-03 004201.png` | Original screenshot capture (reception smart queue). |
