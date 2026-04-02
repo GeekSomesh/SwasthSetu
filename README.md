@@ -16,6 +16,22 @@ This README is designed for judges and evaluators to understand and run the proj
 
 ---
 
+## Quick Visual Preview
+
+For quick first-look evaluation, key screens are shown below.  
+The complete screenshot gallery remains in the dedicated Screenshots section later in this README.
+
+### Login and Role Selection
+![Login Screen](./swasthsetu-app/docs/screenshots/01-login-screen.png)
+
+### Reception Dashboard
+![Reception Patient Lookup](./swasthsetu-app/docs/screenshots/04-reception-patient-lookup.png)
+
+### Doctor Patient Timeline
+![Doctor Patient Timeline](./swasthsetu-app/docs/screenshots/06-patient-timeline.png)
+
+---
+
 ## 2. Problem Statement and Scope
 
 Healthcare continuity often breaks when:
