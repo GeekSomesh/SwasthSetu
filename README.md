@@ -1,4 +1,4 @@
-# SwasthSetu AI - Care Continuity Platform
+# SwasthSetu- Care Continuity Platform
 
 ## 1. Project Summary
 
